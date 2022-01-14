@@ -1,0 +1,130 @@
+name: edgex-ekuiper
+base: core20
+adopt-info: kuiper
+license: Apache-2.0
+summary:  TODO
+title: EdgeX eKuiper
+description: ...
+
+# TODO: add armhf when the project supports this
+architectures:
+  - build-on: amd64
+  - build-on: arm64
+
+grade: stable
+confinement: strict
+
+# edinburgh release is epoch 1
+# fuji release is epoch 2
+# geneva/hanoi releases were epoch 3
+# ireland is epoch 4
+epoch: 4
+
+slots:
+  edgex-secretstore-token:
+    interface: content
+    content: edgex-secretstore-token
+    source:
+      write: [$SNAP_DATA/kuiper]
+
+
+apps:
+  kuiper:
+    adapter: full
+    command: bin/kuiperd
+    command-chain:
+      - bin/startup-env-var.sh
+      - bin/security-secret-store-env-var.sh
+    daemon: simple
+    environment:
+      KuiperBaseKey: $SNAP_DATA/kuiper
+    install-mode: disable
+    plugs: [network, network-bind]
+
+  kuiper-cli:
+    adapter: full
+    command: bin/kuiper
+    environment:
+      KuiperBaseKey: $SNAP_DATA/kuiper
+    plugs: [home, network, network-bind]
+
+plugs:
+  kuiper-config:
+    interface: content
+    target: $SNAP_DATA/config
+
+parts:
+  config-common:
+    plugin: dump
+    source: snap/local/runtime-helpers
+  hooks:
+    source: snap/local/hooks
+    plugin: make
+    build-snaps:
+      - go/1.16/stable
+    override-build: |
+      cd $SNAPCRAFT_PART_SRC
+      make build
+      install -DT ./cmd/configure/configure "$SNAPCRAFT_PART_INSTALL/snap/hooks/configure"
+      install -DT ./cmd/install/install "$SNAPCRAFT_PART_INSTALL/snap/hooks/install"
+  kuiper:
+    source: https://github.com/lf-edge/ekuiper.git
+    source-tag: 1.4.0
+    source-depth: 1
+    plugin: make
+    build-packages: [gcc, git, libczmq-dev, pkg-config, zip]
+    stage-packages: [libzmq5]
+    build-snaps:
+      - go/1.16/stable
+    override-build: |
+      cd $SNAPCRAFT_PART_SRC
+      
+      GIT_VERSION=$(git describe --tags --abbrev=0 | sed 's/v//')
+      if [ -z "$GIT_VERSION" ]; then
+        GIT_VERSION="0.0.0"
+      fi
+      snapcraftctl set-version ${GIT_VERSION}
+      # this is needed for make build
+      echo $GIT_VERSION > ./VERSION
+
+      go mod tidy
+      export BUILD_PATH=$SNAPCRAFT_PART_BUILD
+      export PACKAGES_PATH=$SNAPCRAFT_PART_INSTALL
+      make build_with_edgex
+      make real_pkg
+
+      cd $SNAPCRAFT_PART_INSTALL
+
+      # TODO: SIMPLIFY THIS!!!
+      tar -xvf kuiper*.tar.gz --strip-components=1
+      rm *.zip *.gz
+
+
+      # configure logging & restrict to localhost
+      # configure REST API service port to 59720
+      sed -i -e 's@consoleLog\: false@consoleLog\: true@' \
+        -e 's@fileLog\: true@fileLog\: false@' \
+        -e 's@ip\: 0.0.0.0@ip\: localhost@' \
+        -e 's@restIp\: 0.0.0.0@restIp\: localhost@' \
+        -e 's@restPort\: 9081@restPort\: 59720@' \
+        $SNAPCRAFT_PART_INSTALL/etc/kuiper.yaml
+
+
+      # update the edgex source's port to 5566 to match
+      # app-service-configurable's message bus publish port
+      sed -i -e 's@port\: 5563@port\: 5566@' \
+        $SNAPCRAFT_PART_INSTALL/etc/sources/edgex.yaml
+
+
+      # update the edgex sink's port to 5567 so that it
+      # doesn't collide with the default port used by
+      # app-service-configurable
+      sed -i -e 's@"default": 5563@"default": 5567@' \
+        $SNAPCRAFT_PART_INSTALL/etc/sinks/edgex.json
+
+
+      install -DT "$SNAPCRAFT_PART_SRC/LICENSE" \
+         "$SNAPCRAFT_PART_INSTALL/usr/share/doc/kuiper/LICENSE"
+    stage:
+      - -etc/mqtt_source.yaml
+      - -etc/services/
