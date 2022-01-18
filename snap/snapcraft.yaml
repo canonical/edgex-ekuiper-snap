@@ -2,7 +2,7 @@ name: edgex-ekuiper
 base: core20
 adopt-info: kuiper
 license: Apache-2.0
-summary:  TODO
+summary:  ...
 title: EdgeX eKuiper
 description: ...
 
@@ -27,6 +27,10 @@ slots:
     source:
       write: [$SNAP_DATA/kuiper]
 
+plugs:
+  kuiper-config:
+    interface: content
+    target: $SNAP_DATA/config
 
 apps:
   kuiper:
@@ -48,13 +52,8 @@ apps:
       KuiperBaseKey: $SNAP_DATA/kuiper
     plugs: [home, network, network-bind]
 
-plugs:
-  kuiper-config:
-    interface: content
-    target: $SNAP_DATA/config
-
 parts:
-  config-common:
+  runtime-helpers:
     plugin: dump
     source: snap/local/runtime-helpers
   hooks:

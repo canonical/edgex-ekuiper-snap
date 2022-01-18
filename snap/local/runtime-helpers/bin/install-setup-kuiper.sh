@@ -19,7 +19,7 @@ if [ ! -f "$SNAP_DATA/kuiper/data" ]; then
         cp "$SNAP/etc/$cfg.yaml" "$SNAP_DATA/kuiper/etc"
     done
 
-    cp "$SNAP/ect/connections/connection.yaml" "$SNAP_DATA/kuiper/etc/connections"
+    cp "$SNAP/etc/connections/connection.yaml" "$SNAP_DATA/kuiper/etc/connections"
 
     # Only include the plugin metadata file for mqtt_source,
     # as EdgeX currently doesn't provide a default MQTT broker.
