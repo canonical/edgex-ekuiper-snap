@@ -15,7 +15,7 @@ if [ ! -f "$SNAP_DATA/kuiper/data" ]; then
     mkdir -p "$SNAP_DATA/kuiper/plugins/sources"
     mkdir -p "$SNAP_DATA/kuiper/plugins/portable"
 
-    for cfg in client kuiper; do
+    for cfg in client kuiper mqtt_source; do
         cp "$SNAP/etc/$cfg.yaml" "$SNAP_DATA/kuiper/etc"
     done
 
@@ -31,14 +31,12 @@ if [ ! -f "$SNAP_DATA/kuiper/data" ]; then
 
     cp "$SNAP/etc/services/"*.proto "$SNAP_DATA/kuiper/etc/services"
 
-    for sink in file edgex influx log nop; do
+    for sink in file edgex influx log nop mqtt; do
         cp "$SNAP/etc/sinks/$sink.json" "$SNAP_DATA/kuiper/etc/sinks"
     done
 
-    for src in edgex random; do
-        cp "$SNAP/etc/sources/$src.json" "$SNAP_DATA/kuiper/etc/sources"
-        cp "$SNAP/etc/sources/$src.yaml" "$SNAP_DATA/kuiper/etc/sources"
-    done
+    cp "$SNAP/etc/sources/edgex.json" "$SNAP_DATA/kuiper/etc/sources"
+    cp "$SNAP/etc/sources/edgex.yaml" "$SNAP_DATA/kuiper/etc/sources"
 
     cp "$SNAP/etc/multilingual/"*.ini "$SNAP_DATA/kuiper/etc/multilingual"
 fi
