@@ -41,7 +41,7 @@ apps:
       - bin/security-secret-store-env-var.sh
     daemon: simple
     environment:
-      KuiperBaseKey: $SNAP_DATA/kuiper
+      KuiperBaseKey: $SNAP_DATA
     install-mode: disable
     plugs: [network, network-bind]
 
@@ -49,7 +49,7 @@ apps:
     adapter: full
     command: bin/kuiper
     environment:
-      KuiperBaseKey: $SNAP_DATA/kuiper
+      KuiperBaseKey: $SNAP_DATA
     plugs: [home, network, network-bind]
 
 parts:
