@@ -14,10 +14,10 @@ architectures:
 grade: stable
 confinement: strict
 
-# edinburgh release is epoch 1
-# fuji release is epoch 2
-# geneva/hanoi releases were epoch 3
-# ireland is epoch 4
+# 1: edinburgh
+# 2: fuji
+# 3: geneva, hanoi
+# 4: ireland
 epoch: 4
 
 slots:
@@ -68,13 +68,13 @@ parts:
       install -DT ./cmd/install/install "$SNAPCRAFT_PART_INSTALL/snap/hooks/install"
   kuiper:
     source: https://github.com/lf-edge/ekuiper.git
-    source-tag: 1.4.0
+    source-tag: 1.4.2
     source-depth: 1
     plugin: make
     build-packages: [gcc, git, libczmq-dev, pkg-config, zip]
     stage-packages: [libzmq5]
     build-snaps:
-      - go/1.16/stable
+      - go/1.17/stable
     override-build: |
       cd $SNAPCRAFT_PART_SRC
       
@@ -94,10 +94,8 @@ parts:
 
       cd $SNAPCRAFT_PART_INSTALL
 
-      # TODO: SIMPLIFY THIS!!!
       tar -xvf kuiper*.tar.gz --strip-components=1
-      rm *.zip *.gz
-
+      rm *.gz
 
       # configure logging & restrict to localhost
       # configure REST API service port to 59720
@@ -107,12 +105,6 @@ parts:
         -e 's@restIp\: 0.0.0.0@restIp\: localhost@' \
         -e 's@restPort\: 9081@restPort\: 59720@' \
         $SNAPCRAFT_PART_INSTALL/etc/kuiper.yaml
-
-
-      # update the edgex source's port to 6379 to match
-      # secure edgex message bus publish port
-      sed -i -e 's@port\: 5563@port\: 6379@' \
-        $SNAPCRAFT_PART_INSTALL/etc/sources/edgex.yaml
 
       install -DT "$SNAPCRAFT_PART_SRC/LICENSE" \
          "$SNAPCRAFT_PART_INSTALL/usr/share/doc/kuiper/LICENSE"
