@@ -30,7 +30,8 @@ slots:
 plugs:
   kuiper-config:
     interface: content
-    target: $SNAP_DATA/config
+    content: kuiper-config
+    target: $SNAP_DATA/etc
 
 apps:
   kuiper:
@@ -60,7 +61,7 @@ parts:
     source: snap/local/hooks
     plugin: make
     build-snaps:
-      - go/1.16/stable
+      - go/1.17/stable
     override-build: |
       cd $SNAPCRAFT_PART_SRC
       make build
