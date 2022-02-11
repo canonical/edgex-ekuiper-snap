@@ -23,14 +23,12 @@ epoch: 4
 slots:
   edgex-secretstore-token:
     interface: content
-    content: edgex-secretstore-token
     source:
       write: [$SNAP_DATA/kuiper]
 
 plugs:
   kuiper-config:
     interface: content
-    content: kuiper-config
     target: $SNAP_DATA/etc
 
 apps:
