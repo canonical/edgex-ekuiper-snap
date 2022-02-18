@@ -24,7 +24,8 @@ slots:
   edgex-secretstore-token:
     interface: content
     source:
-      write: [$SNAP_DATA/kuiper]
+      write: 
+        - $SNAP_DATA/edgex-ekuiper
 
 plugs:
   kuiper-config:
@@ -38,10 +39,12 @@ apps:
     command-chain:
       - bin/startup-env-var.sh
       - bin/security-secret-store-env-var.sh
+      - bin/setup-redis-secrets.sh
     daemon: simple
     environment:
       KuiperBaseKey: $SNAP_DATA
     install-mode: disable
+    restart-delay: 60s
     plugs: [network, network-bind]
 
   kuiper-cli:
