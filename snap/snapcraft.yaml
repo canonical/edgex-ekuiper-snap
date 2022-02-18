@@ -27,11 +27,6 @@ slots:
       write: 
         - $SNAP_DATA/edgex-ekuiper
 
-plugs:
-  kuiper-config:
-    interface: content
-    target: $SNAP_DATA/etc
-
 apps:
   kuiper:
     adapter: full
@@ -53,8 +48,30 @@ apps:
     environment:
       KuiperBaseKey: $SNAP_DATA
     plugs: [home, network, network-bind]
+  curl:
+    adapter: full
+    command: usr/bin/curl
+    plugs: [network]
+  jq:
+    adapter: full
+    command: usr/bin/jq
+    plugs: [home, removable-media]
 
 parts:
+  static-packages:
+    plugin: nil
+    # the default source for a part that doesn't specify one is ".", which
+    # then means snapcraft will scan the full git directory here and determine
+    # that if anything changed, i.e. the config-common parts with
+    # actual scripts, etc. this part also gets marked out of date too and needs
+    # rebuilding, even though this part really only depends on a stage-package
+    # to resolve this we can just specify the source of something that changes
+    # infrequently and will minimize unnecessary part re-building by snapcraft
+    source: snap/local/build-helpers
+    stage-packages:
+      - curl
+      - jq
+
   runtime-helpers:
     plugin: dump
     source: snap/local/runtime-helpers
