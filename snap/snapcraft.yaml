@@ -94,6 +94,7 @@ parts:
     stage-packages: [libzmq5]
     build-snaps:
       - go/1.17/stable
+      - yq/v4/stable
     override-build: |
       cd $SNAPCRAFT_PART_SRC
       
@@ -118,12 +119,13 @@ parts:
 
       # configure logging & restrict to localhost
       # configure REST API service port to 59720
-      sed -i -e 's@consoleLog\: false@consoleLog\: true@' \
-        -e 's@fileLog\: true@fileLog\: false@' \
-        -e 's@ip\: 0.0.0.0@ip\: localhost@' \
-        -e 's@restIp\: 0.0.0.0@restIp\: localhost@' \
-        -e 's@restPort\: 9081@restPort\: 59720@' \
-        $SNAPCRAFT_PART_INSTALL/etc/kuiper.yaml
+      yq -i '
+      .basic.consoleLog=true |
+      .basic.fileLog=false |
+      .basic.ip="localhost" |
+      .basic.restIp="localhost" |
+      .basic.restPort=59720
+      ' $SNAPCRAFT_PART_INSTALL/etc/kuiper.yaml
 
       install -DT "$SNAPCRAFT_PART_SRC/LICENSE" \
          "$SNAPCRAFT_PART_INSTALL/usr/share/doc/kuiper/LICENSE"
