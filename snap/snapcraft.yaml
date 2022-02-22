@@ -48,30 +48,14 @@ apps:
     environment:
       KuiperBaseKey: $SNAP_DATA
     plugs: [home, network, network-bind]
-  curl:
-    adapter: full
-    command: usr/bin/curl
-    plugs: [network]
-  jq:
-    adapter: full
-    command: usr/bin/jq
-    plugs: [home, removable-media]
 
 parts:
   static-packages:
     plugin: nil
-    # the default source for a part that doesn't specify one is ".", which
-    # then means snapcraft will scan the full git directory here and determine
-    # that if anything changed, i.e. the config-common parts with
-    # actual scripts, etc. this part also gets marked out of date too and needs
-    # rebuilding, even though this part really only depends on a stage-package
-    # to resolve this we can just specify the source of something that changes
-    # infrequently and will minimize unnecessary part re-building by snapcraft
-    source: snap/local/build-helpers
     stage-packages:
       - curl
-      - jq
-
+    stage-snaps:
+      - yq/v4/stable
   runtime-helpers:
     plugin: dump
     source: snap/local/runtime-helpers
@@ -126,6 +110,27 @@ parts:
       .basic.restIp="localhost" |
       .basic.restPort=59720
       ' $SNAPCRAFT_PART_INSTALL/etc/kuiper.yaml
+
+      yq -i '
+      ... comments="" |
+      .default.port=6379 |
+      .default.topic="rules-events" |
+      .mqtt_conf.server="localhost" |
+      del(.default.messageType) |
+      del(.zmq_conf) |
+      del(.share_conf) |
+      del(.application_conf.type) |
+      del(.application_conf.messageType) |
+      .optional += {"connectionSelector":"edgex.redisMsgBus"}
+      ' $SNAPCRAFT_PART_INSTALL/etc/sources/edgex.yaml
+
+      yq -i '
+      del(.mqtt) |
+      del(.edgex.mqttMsgBus) |
+      del(.edgex.zeroMsgBus) |
+      .edgex.redisMsgBus.server="localhost" |
+      ... comments=""
+      ' $SNAPCRAFT_PART_INSTALL/etc/connections/connection.yaml
 
       install -DT "$SNAPCRAFT_PART_SRC/LICENSE" \
          "$SNAPCRAFT_PART_INSTALL/usr/share/doc/kuiper/LICENSE"

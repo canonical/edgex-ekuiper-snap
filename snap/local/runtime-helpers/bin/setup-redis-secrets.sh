@@ -22,33 +22,5 @@ while true; do
 	fi
 done
 
-REDIS_PASSWORD=$(cat REDIS_TOKEN_FILE)
-
-echo "Modifying source/edgex.yaml"
-yq -i '
-... comments="" |
-.default.port=6379 |
-.default.topic="rules-events" |
-.mqtt_conf.server="localhost" |
-del(.default.messageType) |
-del(.zmq_conf) |
-del(.share_conf) |
-del(.application_conf.type) |
-del(.application_conf.messageType) |
-.optional += {"optional":{"Username":"Redis"}
-+{"Password":'"$REDIS_PASSWORD"'}}
-+{"connectionSelector":"edgex.redisMsgBus"}
-' $SOURCE_FILE
-
-echo "Modifying connections/connection.yaml"
-yq -i '
-del(.mqtt) |
-del(.edgex.mqttMsgBus) |
-del(.edgex.zeroMsgBus) |
-.edgex.redisMsgBus.server="localhost" |
-... comments="" |
-.edgex.redisMsgBus += {"optional":{"Username":"Redis"}+{"Password":'"$REDIS_PASSWORD"'}}
-' $CONNECTIONS_FILE
-
 exec "$@"
 
