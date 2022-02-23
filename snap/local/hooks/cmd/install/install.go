@@ -42,9 +42,11 @@ func installKuiper() error {
 		Stderr: os.Stdout,
 	}
 
-	err = cmdSetupKuiper.Run()
+	stdoutStderr, err := cmdSetupKuiper.CombinedOutput()
 	if err != nil {
-		return err
+		hooks.Error(fmt.Sprintf("edgex-ekuiper:install: Kuiper's file installation failure: %v", err))
+	} else {
+		hooks.Info(fmt.Sprintf("edgex-ekuiper:install: Kuiper's file installation success: %v", stdoutStderr))
 	}
 
 	return nil
@@ -54,9 +56,8 @@ func main() {
 	var err error
 
 	if err = hooks.Init(false, "edgex-kuiper"); err != nil {
-		fmt.Println(fmt.Sprintf("edgex-kuiper:install: initialization failure: %v", err))
+		hooks.Info(fmt.Sprintf("edgex-kuiper:install: initialization failure: %v", err))
 		os.Exit(1)
-
 	}
 
 	if err = installKuiper(); err != nil {
