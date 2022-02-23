@@ -14,11 +14,7 @@ architectures:
 grade: stable
 confinement: strict
 
-# 1: edinburgh
-# 2: fuji
-# 3: geneva, hanoi
-# 4: ireland
-epoch: 4
+epoch: 0
 
 slots:
   edgex-secretstore-token:
@@ -29,7 +25,6 @@ slots:
 
 apps:
   kuiper:
-    adapter: full
     command: bin/kuiperd
     command-chain:
       - bin/startup-env-var.sh
@@ -43,7 +38,6 @@ apps:
     plugs: [network, network-bind]
 
   kuiper-cli:
-    adapter: full
     command: bin/kuiper
     environment:
       KuiperBaseKey: $SNAP_DATA
@@ -87,7 +81,7 @@ parts:
         GIT_VERSION="0.0.0"
       fi
       snapcraftctl set-version ${GIT_VERSION}
-      # this is needed for make build
+      # this is needed for build_with_edgex
       echo $GIT_VERSION > ./VERSION
 
       go mod tidy
