@@ -101,38 +101,12 @@ parts:
       tar -xvf kuiper*.tar.gz --strip-components=1
       rm *.gz
 
-      # configure logging & restrict to localhost
-      # configure REST API service port to 59720
-      yq -i '
-      .basic.consoleLog=true |
-      .basic.fileLog=false |
-      .basic.ip="localhost" |
-      .basic.restIp="localhost" |
-      .basic.restPort=59720
-      ' $SNAPCRAFT_PART_INSTALL/etc/kuiper.yaml
-
-      yq -i '
-      ... comments="" |
-      .default.port=6379 |
-      .default.topic="rules-events" |
-      .mqtt_conf.server="localhost" |
-      del(.default.messageType) |
-      del(.zmq_conf) |
-      del(.share_conf) |
-      del(.application_conf.type) |
-      del(.application_conf.messageType) |
-      .optional += {"connectionSelector":"edgex.redisMsgBus"}
-      ' $SNAPCRAFT_PART_INSTALL/etc/sources/edgex.yaml
-
-      yq -i '
-      del(.mqtt) |
-      del(.edgex.mqttMsgBus) |
-      del(.edgex.zeroMsgBus) |
-      .edgex.redisMsgBus.server="localhost" |
-      ... comments=""
-      ' $SNAPCRAFT_PART_INSTALL/etc/connections/connection.yaml
+      install -DT "$SNAPCRAFT_PROJECT_DIR/etc/kuiper.yaml" "$SNAPCRAFT_PART_INSTALL/etc/kuiper.yaml"
+      install -DT "$SNAPCRAFT_PROJECT_DIR/etc/edgex.yaml" "$SNAPCRAFT_PART_INSTALL/etc/sources/edgex.yaml"
+      install -DT "$SNAPCRAFT_PROJECT_DIR/etc/connection.yaml" "$SNAPCRAFT_PART_INSTALL/etc/connections/connection.yaml"
 
       install -DT "$SNAPCRAFT_PART_SRC/LICENSE" \
          "$SNAPCRAFT_PART_INSTALL/usr/share/doc/kuiper/LICENSE"
     stage:
       - -etc/services/
+
