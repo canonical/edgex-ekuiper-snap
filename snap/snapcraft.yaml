@@ -29,7 +29,6 @@ apps:
     command-chain:
       - bin/startup-env-var.sh
       - bin/security-secret-store-env-var.sh
-      - bin/setup-redis-secrets.sh
     daemon: simple
     environment:
       KuiperBaseKey: $SNAP_DATA
