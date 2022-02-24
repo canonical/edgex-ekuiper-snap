@@ -31,7 +31,7 @@ apps:
     daemon: simple
     environment:
       KuiperBaseKey: $SNAP_DATA
-    install-mode: disable
+    install-mode: enable
     restart-delay: 60s
     plugs: [network, network-bind]
 
@@ -49,16 +49,7 @@ parts:
       - curl
     stage-snaps:
       - yq/v4/stable
-  hooks:
-    source: snap/local/hooks
-    plugin: make
-    build-snaps:
-      - go/1.17/stable
-    override-build: |
-      cd $SNAPCRAFT_PART_SRC
-      make build
-      install -DT ./cmd/configure/configure "$SNAPCRAFT_PART_INSTALL/snap/hooks/configure"
-      install -DT ./cmd/install/install "$SNAPCRAFT_PART_INSTALL/snap/hooks/install"
+
   kuiper:
     source: https://github.com/lf-edge/ekuiper.git
     source-tag: 1.4.2
