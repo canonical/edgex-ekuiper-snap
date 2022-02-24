@@ -27,8 +27,7 @@ apps:
   kuiper:
     command: bin/kuiperd
     command-chain:
-      - bin/startup-env-var.sh
-      - bin/security-secret-store-env-var.sh
+      - bin/redis-token-setup.sh
     daemon: simple
     environment:
       KuiperBaseKey: $SNAP_DATA
