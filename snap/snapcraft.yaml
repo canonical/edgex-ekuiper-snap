@@ -44,13 +44,11 @@ apps:
 parts:
   runtime-helpers:
     plugin: dump
+    source: snap/local/runtime-helpers
     stage-packages:
       - curl
     stage-snaps:
       - yq/v4/stable
-  runtime-helpers:
-    plugin: dump
-    source: snap/local/runtime-helpers
   hooks:
     source: snap/local/hooks
     plugin: make
