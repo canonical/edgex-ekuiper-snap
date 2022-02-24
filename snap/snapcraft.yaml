@@ -6,7 +6,6 @@ summary:  A rules engine works with edgexfoundry
 title: EdgeX eKuiper
 description: Please see https://github.com/edgexfoundry/edgex-go
 
-# TODO: add armhf when the project supports this
 architectures:
   - build-on: amd64
   - build-on: arm64
@@ -78,10 +77,8 @@ parts:
       make real_pkg
 
       cd $SNAPCRAFT_PART_INSTALL
-      rm *.zip
 
       tar -xvf kuiper*.tar.gz --strip-components=1
-      rm *.gz
 
       install "$SNAPCRAFT_PROJECT_DIR/etc/kuiper.yaml" "$SNAPCRAFT_PART_INSTALL/etc"
       install "$SNAPCRAFT_PROJECT_DIR/etc/edgex.yaml" "$SNAPCRAFT_PART_INSTALL/etc/sources"
@@ -91,4 +88,8 @@ parts:
 
     stage:
       - -etc/services/
+      - -etc/ldap/
+      - -etc/mgmt/
+      - -*.gz
+      - -*.zip
 
