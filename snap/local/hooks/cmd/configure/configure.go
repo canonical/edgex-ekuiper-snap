@@ -19,7 +19,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -29,75 +28,18 @@ import (
 
 var cli *hooks.CtlCli = hooks.NewSnapCtl()
 
-// validateProfile processes the snap 'profile' configure option, ensuring that the directory
-// and associated configuration.toml file in $SNAP_DATA both exist.
-//
-func validateProfile(prof string) error {
-	hooks.Debug(fmt.Sprintf("edgex-kuiper:configure:validateProfile: profile is %s", prof))
-
-	if prof == "" {
-		return nil
-	}
-
-	path := fmt.Sprintf("%s/config/res/%s/configuration.toml", hooks.SnapData, prof)
-	hooks.Debug(fmt.Sprintf("edgex-kuiper:configure:validateProfile: checking if %s exists", path))
-
-	_, err := os.Stat(path)
-	if err != nil {
-		return errors.New(fmt.Sprintf("profile %s has no configuration.toml", prof))
-	}
-
-	return nil
-}
-
 func main() {
 	var debug = false
-	var enable = true
 	var err error
-	var envJSON, prof string
-
-	status, err := cli.Config("debug")
-	if err != nil {
-		fmt.Println(fmt.Sprintf("edgex-kuiper:configure: can't read value of 'debug': %v", err))
-		os.Exit(1)
-	}
-	if status == "true" {
-		debug = true
-	}
+	var enable = true
 
 	if err = hooks.Init(debug, "edgex-kuiper"); err != nil {
-		fmt.Println(fmt.Sprintf("edgex-kuiper:configure: initialization failure: %v", err))
+		hooks.Error(fmt.Sprintf("edgex-kuiper:configure: initialization failure: %v", err))
 		os.Exit(1)
 
-	}
-
-	prof, err = cli.Config(hooks.ProfileConfig)
-	if err != nil {
-		hooks.Error(fmt.Sprintf("Error reading config 'profile': %v", err))
-		os.Exit(1)
-	}
-
-	validateProfile(prof)
-	if err != nil {
-		hooks.Error(fmt.Sprintf("Error validating profile: %v", err))
-		os.Exit(1)
-	}
-
-	envJSON, err = cli.Config(hooks.EnvConfig)
-	if err != nil {
-		hooks.Error(fmt.Sprintf("Reading config 'env' failed: %v", err))
-		os.Exit(1)
-	}
-
-	err = hooks.HandleEdgeXConfig("kuiper", envJSON, nil)
-	if err != nil {
-		hooks.Error(fmt.Sprintf("HandleEdgeXConfig failed: %v", err))
-		os.Exit(1)
 	}
 
 	// If autostart is not explicitly set, default to "no"
-	// as only example service configuration and profiles
-	// are provided by default.
 	autostart, err := cli.Config(hooks.AutostartConfig)
 	if err != nil {
 		hooks.Error(fmt.Sprintf("Reading config 'autostart' failed: %v", err))
@@ -107,22 +49,27 @@ func main() {
 		hooks.Debug("edgex-kuiper: autostart is NOT set, initializing to 'no'")
 		autostart = "no"
 	}
-
 	autostart = strings.ToLower(autostart)
-	if autostart == "true" || autostart == "yes" {
-		if prof == "" {
-			hooks.Warn(fmt.Sprintf("autostart is %s, but no profile set", autostart))
-			enable = false
+	hooks.Debug(fmt.Sprintf("edgex-ekuiper autostart is %s", autostart))
+
+	switch autostart {
+	case "true":
+		fallthrough
+	case "yes":
+		err = cli.Start("kuiper", true)
+		if err != nil {
+			hooks.Error(fmt.Sprintf("Can't start service - %v", err))
+			os.Exit(1)
 		}
-	} else if autostart == "false" || autostart == "no" {
-		enable = false
-	} else {
+	case "false":
+		// no action necessary
+	case "no":
+		// no action necessary
+	default:
 		hooks.Error(fmt.Sprintf("Invalid value for 'autostart' : %s", autostart))
 		os.Exit(1)
 	}
 
-	// service is stopped/disabled by default in the install hook
-	// only enable if profile exists and autstart is set
 	if enable {
 		err = cli.Start("kuiper", true)
 		if err != nil {
