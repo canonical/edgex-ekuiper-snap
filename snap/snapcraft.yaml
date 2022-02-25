@@ -61,16 +61,6 @@ parts:
     override-build: |
       cd $SNAPCRAFT_PART_SRC
       
-      if git describe --tags ; then
-        GIT_VERSION=$(git describe --tags --abbrev=0 | sed 's/v//')
-      else
-        GIT_VERSION="0.0.0"
-      fi
-      snapcraftctl set-version ${GIT_VERSION}
-      # this is needed for build_with_edgex
-      echo $GIT_VERSION > ./VERSION
-
-      go mod tidy
       export BUILD_PATH=$SNAPCRAFT_PART_BUILD
       export PACKAGES_PATH=$SNAPCRAFT_PART_INSTALL
       make build_with_edgex
