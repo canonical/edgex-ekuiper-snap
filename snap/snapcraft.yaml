@@ -1,10 +1,23 @@
 name: edgex-ekuiper
-base: core20
-adopt-info: kuiper
+version: git
 license: Apache-2.0
-summary:  A rules engine works with edgexfoundry
-title: EdgeX eKuiper
-description: Please see https://github.com/edgexfoundry/edgex-go
+summary: EdgeX eKuiper
+description: |
+  eKuiper is a lightweight IoT edge analytics software.
+
+  This is a snap packaging of eKuiper tailored to the EdgeX Foundry snap,
+  available at: https://snapcraft.io/edgexfoundry
+
+  The snap is designed to work with EdgeX and is not supported 
+  for standalone use.
+
+  The snap is **NOT SUPPORTED** by the eKuiper community.
+  For any EdgeX-related issues, please refer to:
+  https://github.com/canonical/edgex-ekuiper-snap
+
+  eKuiper source code: https://github.com/lf-edge/ekuiper
+
+base: core20
 
 architectures:
   - build-on: amd64
@@ -61,16 +74,6 @@ parts:
     override-build: |
       cd $SNAPCRAFT_PART_SRC
       
-      if git describe --tags ; then
-        GIT_VERSION=$(git describe --tags --abbrev=0 | sed 's/v//')
-      else
-        GIT_VERSION="0.0.0"
-      fi
-      snapcraftctl set-version ${GIT_VERSION}
-      # this is needed for build_with_edgex
-      echo $GIT_VERSION > ./VERSION
-
-      go mod tidy
       export BUILD_PATH=$SNAPCRAFT_PART_BUILD
       export PACKAGES_PATH=$SNAPCRAFT_PART_INSTALL
       make build_with_edgex
