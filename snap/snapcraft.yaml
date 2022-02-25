@@ -1,10 +1,10 @@
 name: edgex-ekuiper
-base: core20
-adopt-info: kuiper
+version: git
 license: Apache-2.0
 summary:  A rules engine works with edgexfoundry
 title: EdgeX eKuiper
 description: Please see https://github.com/edgexfoundry/edgex-go
+base: core20
 
 architectures:
   - build-on: amd64
