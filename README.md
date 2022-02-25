@@ -14,6 +14,8 @@ https://github.com/canonical/edgex-ekuiper-snap
 
 eKuiper source code: https://github.com/lf-edge/ekuiper
 
+eKuiper is a trademark of LF Projects: https://lfprojects.org
+
 ## Snap Installation
 
 TBA

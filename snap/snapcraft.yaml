@@ -17,6 +17,8 @@ description: |
 
   eKuiper source code: https://github.com/lf-edge/ekuiper
 
+  eKuiper is a trademark of LF Projects: https://lfprojects.org
+
 base: core20
 
 architectures:
