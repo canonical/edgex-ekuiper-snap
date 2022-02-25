@@ -1,0 +1,21 @@
+application_conf:
+  port: 5571
+  protocol: tcp
+  server: localhost
+  topic: application
+default:
+  port: 6379
+  protocol: redis
+  server: localhost
+  connectionSelector: edgex.redisMsgBus
+  topic: rules-events
+  type: redis
+mqtt_conf:
+  optional:
+    ClientId: client1
+  port: 1883
+  protocol: tcp
+  server: localhost
+  topic: events
+  type: mqtt
+

@@ -1,0 +1,95 @@
+name: edgex-ekuiper
+base: core20
+adopt-info: kuiper
+license: Apache-2.0
+summary:  A rules engine works with edgexfoundry
+title: EdgeX eKuiper
+description: Please see https://github.com/edgexfoundry/edgex-go
+
+architectures:
+  - build-on: amd64
+  - build-on: arm64
+
+grade: stable
+confinement: strict
+
+epoch: 0
+
+slots:
+  edgex-secretstore-token:
+    interface: content
+    source:
+      write: 
+        - $SNAP_DATA/edgex-ekuiper
+
+apps:
+  kuiper:
+    command: bin/kuiperd
+    command-chain:
+      - bin/redis-token-setup.sh
+    daemon: simple
+    environment:
+      KuiperBaseKey: $SNAP_DATA
+    install-mode: enable
+    restart-delay: 60s
+    plugs: [network, network-bind]
+
+  kuiper-cli:
+    command: bin/kuiper
+    environment:
+      KuiperBaseKey: $SNAP_DATA
+    plugs: [home, network, network-bind]
+
+parts:
+  runtime-helpers:
+    plugin: dump
+    source: snap/local/runtime-helpers
+    stage-packages:
+      - curl
+    stage-snaps:
+      - yq/v4/stable
+
+  kuiper:
+    source: https://github.com/lf-edge/ekuiper.git
+    source-tag: 1.4.2
+    source-depth: 1
+    plugin: make
+    build-packages: [gcc, git, libczmq-dev, pkg-config, zip]
+    stage-packages: [libzmq5]
+    build-snaps:
+      - go/1.17/stable
+    override-build: |
+      cd $SNAPCRAFT_PART_SRC
+      
+      if git describe --tags ; then
+        GIT_VERSION=$(git describe --tags --abbrev=0 | sed 's/v//')
+      else
+        GIT_VERSION="0.0.0"
+      fi
+      snapcraftctl set-version ${GIT_VERSION}
+      # this is needed for build_with_edgex
+      echo $GIT_VERSION > ./VERSION
+
+      go mod tidy
+      export BUILD_PATH=$SNAPCRAFT_PART_BUILD
+      export PACKAGES_PATH=$SNAPCRAFT_PART_INSTALL
+      make build_with_edgex
+      make real_pkg
+
+      cd $SNAPCRAFT_PART_INSTALL
+
+      tar -xvf kuiper*.tar.gz --strip-components=1
+
+      install "$SNAPCRAFT_PROJECT_DIR/etc/kuiper.yaml" "$SNAPCRAFT_PART_INSTALL/etc"
+      install "$SNAPCRAFT_PROJECT_DIR/etc/edgex.yaml" "$SNAPCRAFT_PART_INSTALL/etc/sources"
+      install "$SNAPCRAFT_PROJECT_DIR/etc/connection.yaml" "$SNAPCRAFT_PART_INSTALL/etc/connections"
+
+      install -DT "$SNAPCRAFT_PART_SRC/LICENSE" "$SNAPCRAFT_PART_INSTALL/usr/share/doc/kuiper/LICENSE"
+
+    stage:
+      - -etc/services/
+      - -etc/ldap/
+      - -etc/mgmt/
+      - -*.gz
+      - -*.zip
+
