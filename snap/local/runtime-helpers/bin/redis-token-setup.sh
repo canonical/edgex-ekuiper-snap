@@ -13,7 +13,7 @@ handle_error()
 	local ITEM=$2
 	local RESPONSE=$3
 	if [ $EXIT_CODE -ne 0 ] ; then
-		logger --stderr "edgex-ekuiper:redis-token-setup: $ITEM return no-zero exit code: $EXIT_CODE, with response: $RESPONSE"
+		logger --stderr "edgex-ekuiper:redis-token-setup: $ITEM exited with code $EXIT_CODE: $RESPONSE"
 		exit 1
 	fi
 }
@@ -34,13 +34,14 @@ if [ -f "$VAULT_TOKEN_FILE" ] ; then
 	# check response http code
 	HTTP_CODE="${CURL_RES:${#CURL_RES}-3}"
 	if [ $HTTP_CODE -ne 200 ] ; then
-	  logger --stderr "edgex-ekuiper:redis-token-setup: curl return error with http code: $HTTP_CODE, with response: $CURL_RES"
+	  logger --stderr "edgex-ekuiper:redis-token-setup: http error $HTTP_CODE, with response: $CURL_RES"
 	  exit 1
 	fi
 
 	# get CURL's reponse
 	if [ ${#CURL_RES} -eq 3 ]; then
-	  BODY=""
+	  logger --stderr "edgex-ekuiper:redis-token-setup: unexpected http response with empty body"
+	  exit 1
 	else
 	  BODY="${CURL_RES:0:${#CURL_RES}-3}"
 	fi
