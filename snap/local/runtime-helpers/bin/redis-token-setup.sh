@@ -25,25 +25,25 @@ if [ -f "$VAULT_TOKEN_FILE" ] ; then
 	TOKEN=$(yq "$VAULT_TOKEN_FILE" | yq ' .auth.client_token')
 	handle_error $? "yq" $TOKEN
 
-    # check CURL's exit code
+	# check CURL's exit code
 	CURL_RES=$(curl --silent --write-out "%{http_code}" \
 	--header "X-Vault-Token: $TOKEN" \
 	--request GET http://localhost:8200/v1/secret/edgex/edgex-ekuiper/redisdb)
-    handle_error $? "curl" $CURL_RES
+	handle_error $? "curl" $CURL_RES
 
 	# check response http code
 	HTTP_CODE="${CURL_RES:${#CURL_RES}-3}"
 	if [ $HTTP_CODE -ne 200 ] ; then
-	  logger --stderr "edgex-ekuiper:redis-token-setup: http error $HTTP_CODE, with response: $CURL_RES"
-	  exit 1
+		logger --stderr "edgex-ekuiper:redis-token-setup: http error $HTTP_CODE, with response: $CURL_RES"
+		exit 1
 	fi
 
 	# get CURL's reponse
 	if [ ${#CURL_RES} -eq 3 ]; then
-	  logger --stderr "edgex-ekuiper:redis-token-setup: unexpected http response with empty body"
-	  exit 1
+		logger --stderr "edgex-ekuiper:redis-token-setup: unexpected http response with empty body"
+		exit 1
 	else
-	  BODY="${CURL_RES:0:${#CURL_RES}-3}"
+		BODY="${CURL_RES:0:${#CURL_RES}-3}"
 	fi
 
 	# process the reponse and check if yq works
