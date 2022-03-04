@@ -7,42 +7,61 @@ REDIS_TOKEN_FILE=$SNAP_DATA/edgex-ekuiper/redis.yaml
 SOURCE_FILE=$SNAP_DATA/etc/sources/edgex.yaml 
 CONNECTIONS_FILE=$SNAP_DATA/etc/connections/connection.yaml
 
+handle_error()
+{
+	local EXIT_CODE=$1
+	local ITEM=$2
+	local RESPONSE=$3
+	if [ $EXIT_CODE -ne 0 ] ; then
+		logger --stderr "edgex-ekuiper:redis-token-setup: $ITEM exited with code $EXIT_CODE: $RESPONSE"
+		exit 1
+	fi
+}
+
 # use Vault token query Redis token, access edgexfoundry secure Message Bus
 if [ -f "$VAULT_TOKEN_FILE" ] ; then
 	# get Vault token and create redis.yaml
 	logger "edgex-ekuiper:redis-token-setup: using Vault token to query Redis token"
 	TOKEN=$(yq "$VAULT_TOKEN_FILE" | yq ' .auth.client_token')
-	touch "$REDIS_TOKEN_FILE"
+	handle_error $? "yq" $TOKEN
 
-	# check if curl work
-	CURL_HTTP_CODE=$(curl -o /dev/null --write-out "%{http_code}" -s --show-error -H "X-Vault-Token: $TOKEN" -X GET http://localhost:8200/v1/secret/edgex/edgex-ekuiper/redisdb)
+	# check CURL's exit code
+	CURL_RES=$(curl --silent --write-out "%{http_code}" \
+	--header "X-Vault-Token: $TOKEN" \
+	--request GET http://localhost:8200/v1/secret/edgex/edgex-ekuiper/redisdb)
+	handle_error $? "curl" $CURL_RES
 
-	# check if YQ work
-	YQ_OUT=$(curl -s --show-error -H "X-Vault-Token: $TOKEN" -X GET http://localhost:8200/v1/secret/edgex/edgex-ekuiper/redisdb | yq '.data.password')
-	YQ_EXIT_CODE=$?
+	# check response http code
+	HTTP_CODE="${CURL_RES:${#CURL_RES}-3}"
+	if [ $HTTP_CODE -ne 200 ] ; then
+		logger --stderr "edgex-ekuiper:redis-token-setup: http error $HTTP_CODE, with response: $CURL_RES"
+		exit 1
+	fi
 
-	# check if CURL or YQ return no-zero code
-	if [ $CURL_HTTP_CODE != 200 ] || [ $YQ_EXIT_CODE -ne 0 ] ; then
-		logger "edgex-ekuiper:redis-token-setup: could not use Vault token to query Redis credentials"
+	# get CURL's reponse
+	if [ ${#CURL_RES} -eq 3 ]; then
+		logger --stderr "edgex-ekuiper:redis-token-setup: unexpected http response with empty body"
 		exit 1
 	else
-		# curl and jq work great, put Redis token into redis.yaml
-		logger "edgex-ekuiper:redis-token-setup: sending Redis token to $REDIS_TOKEN_FILE"
-		echo $YQ_OUT > "$REDIS_TOKEN_FILE"
-		logger "edgex-ekuiper:redis-token-setup: sent Redis token to $REDIS_TOKEN_FILE"
-		REDIS_PASSWORD=$(yq "$REDIS_TOKEN_FILE")
-
-		# pass generated Redis credentials to configuration files
-		logger "edgex-ekuiper:redis-token-setup: passing Redis token to $SOURCE_FILE"
-		yq -i '.default += {"optional":{"Username":"Redis"}+{"Password":"'$REDIS_PASSWORD'"}}' "$SOURCE_FILE"
-
-		logger "edgex-ekuiper:redis-token-setup: passing Redis token to $CONNECTIONS_FILE"
-		yq -i '.edgex.redisMsgBus += {"optional":{"Username":"Redis"}+{"Password":"'$REDIS_PASSWORD'"}}' "$CONNECTIONS_FILE"
-		
-		logger "edgex-ekuiper:redis-token-setup: start edgex-ekuiper with edgexfoundry Vault token"
+		BODY="${CURL_RES:0:${#CURL_RES}-3}"
 	fi
+
+	# process the reponse and check if yq works
+	REDIS_CREDENTIALS=$(echo $BODY| yq '.data')
+	handle_error $? "yq" $REDIS_CREDENTIALS
+
+	# pass generated Redis credentials to configuration files
+	logger "edgex-ekuiper:redis-token-setup: adding Redis credentials to $SOURCE_FILE"
+	YQ_RES=$(yq -i '.default += {"optional":'"$REDIS_CREDENTIALS"'}' "$SOURCE_FILE")
+	handle_error $? "yq" $YQ_RES
+	
+	logger "edgex-ekuiper:redis-token-setup: adding Redis credentials to $CONNECTIONS_FILE"
+	YQ_RES=$(yq -i '.edgex.redisMsgBus += '"$REDIS_CREDENTIALS"'' "$CONNECTIONS_FILE")
+	handle_error $? "yq" $YQ_RES
+
+	logger "edgex-ekuiper:redis-token-setup: configured eKuiper to authenticate with Redis, using credentials fetched from Vault"
 else
-	logger "edgex-ekuiper:connect-slot-edgex-secretstore-token: start edgex-ekuiper without edgexfoundry Vault token as it is not available"
+	logger --stderr "edgex-ekuiper:redis-token-setup: unable to configure eKuiper to authenticate with Redis: unable to query Redis token from Vault: Vault token not available"
 fi
 
 exec "$@"
