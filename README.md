@@ -25,3 +25,7 @@ TBA
 TBA
 
 For more details, please refer to: https://github.com/lf-edge/ekuiper/blob/master/docs/en_US/operation/config/configuration_file.md
+
+## Tagging
+This repository is tagged after the eKuiper project with a [semver build metadata](https://semver.org/#spec-item-10) `snap` suffix.
+For example, if eKuiper is tagged as `1.4.3`, this repository will be tagged as `1.4.3+snap`, `1.4.3+snap.2`, `1.4.3+snap.N`. The build version increments indicate updates to the snap packaging on top of the same eKuiper release.
