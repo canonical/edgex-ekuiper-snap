@@ -47,16 +47,18 @@ if [ -f "$VAULT_TOKEN_FILE" ] ; then
 	fi
 
 	# process the reponse and check if yq works
-	REDIS_CREDENTIALS=$(echo $BODY| yq '.data')
-	handle_error $? "yq" $REDIS_CREDENTIALS
+	REDIS_USER=$(echo $BODY| yq '.data.username')
+	handle_error $? "yq" $REDIS_USER
+	REDIS_PASS=$(echo $BODY| yq '.data.password')
+	handle_error $? "yq" $REDIS_PASS
 
 	# pass generated Redis credentials to configuration files
 	logger "edgex-ekuiper:redis-token-setup: adding Redis credentials to $SOURCE_FILE"
-	YQ_RES=$(yq -i '.default += {"optional":'"$REDIS_CREDENTIALS"'}' "$SOURCE_FILE")
+	YQ_RES=$(yq -i '.default += {"optional":{"Username":"'$REDIS_USER'"}+{"Password":"'$REDIS_PASS'"}}' "$SOURCE_FILE")
 	handle_error $? "yq" $YQ_RES
 	
 	logger "edgex-ekuiper:redis-token-setup: adding Redis credentials to $CONNECTIONS_FILE"
-	YQ_RES=$(yq -i '.edgex.redisMsgBus += '"$REDIS_CREDENTIALS"'' "$CONNECTIONS_FILE")
+	YQ_RES=$(yq -i '.edgex.redisMsgBus += {"optional":{"Username":"'$REDIS_USER'"}+{"Password":"'$REDIS_PASS'"}}' "$CONNECTIONS_FILE")
 	handle_error $? "yq" $YQ_RES
 
 	logger "edgex-ekuiper:redis-token-setup: configured eKuiper to authenticate with Redis, using credentials fetched from Vault"
