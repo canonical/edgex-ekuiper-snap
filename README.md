@@ -17,8 +17,8 @@ eKuiper source code: https://github.com/lf-edge/ekuiper
 eKuiper is a trademark of LF Projects: https://lfprojects.org
 
 ## Snap Installation
+[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-white.svg)](https://snapcraft.io/edgex-ekuiper)
 
-TBA
 
 ## Snap Configuration
 
@@ -29,3 +29,5 @@ For more details, please refer to: https://github.com/lf-edge/ekuiper/blob/maste
 ## Tagging
 This repository is tagged after the eKuiper project with a [semver build metadata](https://semver.org/#spec-item-10) `snap` suffix.
 For example, if eKuiper is tagged as `1.4.3`, this repository will be tagged as `1.4.3+snap`, `1.4.3+snap.2`, `1.4.3+snap.N`. The build version increments indicate updates to the snap packaging on top of the same eKuiper release.
+
+The [release](https://github.com/canonical/edgex-ekuiper-snap/actions/workflows/release.yml) Github workflow can be used to manually tag and release, enforcing the above schema.
