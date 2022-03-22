@@ -10,11 +10,16 @@ on:
 
 jobs:
   release:
+    name: Validate, tag, release
     runs-on: ubuntu-latest
     steps:
       - name: Validate version
         run: |
-          if [[ ! "${{ github.event.inputs.tag_name }}" =~ ^[0-9].[0-9].[0-9].*$ ]]; then
+          # Accept:
+          # X.Y.Z-snap
+          # X.Y.Z-snap.N; N > 1
+          if [[ ! "${{ github.event.inputs.tag_name }}" =~ ^[0-9]+.[0-9]+.[0-9]+-snap(.[2-9]|.[1-9][0-9]+)?$ ]]
+          then
             echo "Invalid version!"
             exit 1
           fi
