@@ -3,8 +3,8 @@ name: Tag & Release
 on: 
   workflow_dispatch:
     inputs:
-      tag:
-        description: 'Git Tag'     
+      tag_name:
+        description: 'Git Tag Name (format: X.Y.Z-snap.N)' 
         required: true
         type: string
 
@@ -12,8 +12,16 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: avakar/tag-and-release@v1
+      - name: Validate version
+        run: |
+          if [[ ! "${{ github.event.inputs.tag_name }}" =~ ^[0-9].[0-9].[0-9].*$ ]]; then
+            echo "Invalid version!"
+            exit 1
+          fi
+
+      - name: Tag and release
+        uses: avakar/tag-and-release@v1
         with:
-          tag_name: ${{ github.event.inputs.tag }}
+          tag_name: ${{ github.event.inputs.tag_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
