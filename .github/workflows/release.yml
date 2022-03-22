@@ -1,0 +1,30 @@
+name: Tag & Release
+
+on: 
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Git Tag Name' 
+        required: true
+        type: string
+
+jobs:
+  release:
+    name: Validate, tag, release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate version
+        run: |
+          # Check if tag is X.Y.Z-snap or X.Y.Z-snap.N; N > 1
+          if [[ ! "${{ github.event.inputs.tag_name }}" =~ ^[0-9]+.[0-9]+.[0-9]+-snap(.[2-9]|.[1-9][0-9]+)?$ ]]
+          then
+            echo "Invalid version!"
+            exit 1
+          fi
+
+      - name: Tag and release
+        uses: avakar/tag-and-release@v1
+        with:
+          tag_name: ${{ github.event.inputs.tag_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
