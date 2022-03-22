@@ -1,4 +1,4 @@
-name: Tag & Release
+name: Release
 
 on: 
   workflow_dispatch:
@@ -22,9 +22,15 @@ jobs:
             exit 1
           fi
 
-      - name: Tag and release
-        uses: avakar/tag-and-release@v1
+      - name: Checkout
+        uses: actions/checkout@v2
+          
+      - name: Tag (annotated)
+        uses: rickstaa/action-create-tag@v1
+        with:
+          tag: ${{ github.event.inputs.tag_name }}
+          
+      - name: Release
+        uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ github.event.inputs.tag_name }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
