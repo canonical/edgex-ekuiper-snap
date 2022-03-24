@@ -44,7 +44,6 @@ apps:
       - bin/setup-redis-credentials.sh
     daemon: simple
     environment:
-      KuiperBaseKey: $SNAP_DATA
       VAULT_TOKEN_FILE: $SNAP_DATA/edgex-ekuiper/secrets-token.json
       SOURCE_FILE: $SNAP_DATA/etc/sources/edgex.yaml 
       CONNECTION_FILE: $SNAP_DATA/etc/connections/connection.yaml
