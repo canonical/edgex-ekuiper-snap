@@ -1,42 +1,44 @@
 #!/bin/sh
 
-# create directories in $SNAP_DATA
-if [ ! -f "$SNAP_DATA/data" ]; then
-    mkdir -p "$SNAP_DATA/data"
-    mkdir -p "$SNAP_DATA/etc/functions"
-    mkdir -p "$SNAP_DATA/etc/multilingual"
-    mkdir -p "$SNAP_DATA/etc/services"
-    mkdir -p "$SNAP_DATA/etc/sinks"
-    mkdir -p "$SNAP_DATA/etc/sources"
-    mkdir -p "$SNAP_DATA/etc/connections"
+BASE_PATH="${KUIPER_BASE_KEY:-$SNAP_DATA}"
 
-    mkdir -p "$SNAP_DATA/plugins/functions"
-    mkdir -p "$SNAP_DATA/plugins/sinks"
-    mkdir -p "$SNAP_DATA/plugins/sources"
-    mkdir -p "$SNAP_DATA/plugins/portable"
+# create directories in $BASE_PATH
+if [ ! -f "$BASE_PATH/data" ]; then
+    mkdir -p "$BASE_PATH/data"
+    mkdir -p "$BASE_PATH/etc/functions"
+    mkdir -p "$BASE_PATH/etc/multilingual"
+    mkdir -p "$BASE_PATH/etc/services"
+    mkdir -p "$BASE_PATH/etc/sinks"
+    mkdir -p "$BASE_PATH/etc/sources"
+    mkdir -p "$BASE_PATH/etc/connections"
+
+    mkdir -p "$BASE_PATH/plugins/functions"
+    mkdir -p "$BASE_PATH/plugins/sinks"
+    mkdir -p "$BASE_PATH/plugins/sources"
+    mkdir -p "$BASE_PATH/plugins/portable"
 
     for cfg in client kuiper mqtt_source; do
-        cp "$SNAP/etc/$cfg.yaml" "$SNAP_DATA/etc"
+        cp "$SNAP/etc/$cfg.yaml" "$BASE_PATH/etc"
     done
 
-    cp "$SNAP/etc/connections/connection.yaml" "$SNAP_DATA/etc/connections"
+    cp "$SNAP/etc/connections/connection.yaml" "$BASE_PATH/etc/connections"
 
     # Only include the plugin metadata file for mqtt_source,
     # as EdgeX currently doesn't provide a default MQTT broker.
     # Even if it did, configuration (including security) would
     # need to be provided by configuration file (!compliant).
-    cp "$SNAP/etc/mqtt_source.json" "$SNAP_DATA/etc"
+    cp "$SNAP/etc/mqtt_source.json" "$BASE_PATH/etc"
 
-    cp "$SNAP/etc/functions/"*.json "$SNAP_DATA/etc/functions"
+    cp "$SNAP/etc/functions/"*.json "$BASE_PATH/etc/functions"
 
-    cp "$SNAP/etc/services/"*.proto "$SNAP_DATA/etc/services"
+    cp "$SNAP/etc/services/"*.proto "$BASE_PATH/etc/services"
 
     for sink in file edgex influx log nop mqtt; do
-        cp "$SNAP/etc/sinks/$sink.json" "$SNAP_DATA/etc/sinks"
+        cp "$SNAP/etc/sinks/$sink.json" "$BASE_PATH/etc/sinks"
     done
 
-    cp "$SNAP/etc/sources/edgex.json" "$SNAP_DATA/etc/sources"
-    cp "$SNAP/etc/sources/edgex.yaml" "$SNAP_DATA/etc/sources"
+    cp "$SNAP/etc/sources/edgex.json" "$BASE_PATH/etc/sources"
+    cp "$SNAP/etc/sources/edgex.yaml" "$BASE_PATH/etc/sources"
 
-    cp "$SNAP/etc/multilingual/"*.ini "$SNAP_DATA/etc/multilingual"
+    cp "$SNAP/etc/multilingual/"*.ini "$BASE_PATH/etc/multilingual"
 fi
