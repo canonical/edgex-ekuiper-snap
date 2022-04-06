@@ -37,7 +37,7 @@ sudo snap install edgex-ekuiper --channel=1/beta
 EdgeX ekuiper depends on several other edgexfoundry services.
 
 Please refer to [edgexfoundry Snap](https://github.com/edgexfoundry/edgex-go/blob/main/snap/README.md) for installation of the snapped version, 
-and use `--chanel=latest` track.
+and use `--channel=latest/edge`.
 
 Enable the following app-service-configurable services for ekuiper, to use [filtering functions](https://docs.edgexfoundry.org/2.2/microservices/application/AppServiceConfigurable):
 ```bash
@@ -69,7 +69,7 @@ edgexfoundry.sys-mgmt-agent                disabled  inactive  -
 edgexfoundry.vault                         enabled   active    -
 ```
 ## Snap Configuration
-The service can then be started as follows. 
+The service can be started as follows. 
 The `--enable` option ensures that as well as starting the service now, 
 it will be automatically started on boot:
 ```bash
@@ -80,41 +80,41 @@ ensures that as well as stopping the service now, it will not be automatically s
 ```bash
 sudo snap stop --disable edgex-ekuiper.kuiper
 ```
-### configuration files
+### Configuration files
 The basic configuration file for ekuiper is at `/var/snap/edgex-ekuiper/current/etc/kuiper.yaml`. 
 For more details, please refer to [lf-edge/ekuiper docs](https://github.com/lf-edge/ekuiper/blob/master/docs/en_US/operation/config/configuration_file.md).
 
 The `/var/snap/edgex-ekuiper/current/etc` directory contains the configuration files of eKuiper. 
 Such as sources, sinks and connections configurations etc. 
-### connect to edgexfoundry secure message bus
-By default, the edgex-ekuiper enables its service on install. 
+### Connect to edgexfoundry secure message bus
+By default, ekuiper enables its service on install. 
 If there is no secret file under `/var/snap/edgex-ekuiper/current/edgex-ekuiper/secrets-token.json`, 
-then it will run without secret. 
-#### edgexfoundry security-on:
+then it will run without edgexfoundry's secret. 
+#### edgexfoundry security-on mode
 edgexfoundry has security turned on by default.
 
 - If edgexfoundry has been installed before ekuiper, ekuiper will get secret automatically.
 
-- If edgexfoundry has been installed after ekuiper, running ekuiper need `snap restart` to pick up the secret, 
+- If edgexfoundry has been installed after ekuiper, the running ekuiper needs `snap restart` pick up the secret, 
 to enter the edgexfoundry's security message bus:
 ```bash
 sudo snap restart edgex-ekuiper
 ```
-#### edgexfoundry security-off:
+#### edgexfoundry security-off mode
 When turning edgexfoundry security off: 
 ```bash
 sudo snap set edgexfoundry security-secret-store=off
 ```
 There are some configurations need to be done on ekuiper side:
 ```bash
-# secret token file needs to be removed
+# remove existing secret token file
 sudo rm -rf /var/snap/edgex-ekuiper/current/edgex-ekuiper/secrets-token.json
-# snap connection needs to be disconnected:
+# disconnect snaps
 sudo snap disconnect edgexfoundry:edgex-secretstore-token edgex-ekuiper:edgex-secretstore-token
-# ekuiper needs to be restarted to enter security off mode
+# restart ekuiper to pick up new configs, then enter security off mode
 sudo snap restart edgex-ekuiper
 ```
-### work without app-service-configurable filtering:
+### Work without app-service-configurable filtering:
 ```bash
 snap set edgexfoundry app-service-configurable=off
 ```
