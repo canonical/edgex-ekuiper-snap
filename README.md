@@ -19,77 +19,72 @@ eKuiper is a trademark of LF Projects: https://lfprojects.org
 ## Snap Installation
 [![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-white.svg)](https://snapcraft.io/edgex-ekuiper)
 
-This folder contains snap packaging for the EdgeX eKuiper Snap.
-
-You can see the current revisions available for your machine's architecture by running the command:
-```bash
-sudo snap info edgex-ekuiper
-```
-The latest beta version of the snap can be installed using:
-```bash
-sudo snap install edgex-ekuiper --beta
-```
-A specific release of the snap can be installed from a dedicated channel. For example, to install the 1 release:
-```bash
-sudo snap install edgex-ekuiper --channel=1/beta
-```
 ### Install and configure dependencies
 EdgeX ekuiper depends on several other edgexfoundry services.
 
 Please refer to [edgexfoundry Snap](https://github.com/edgexfoundry/edgex-go/blob/main/snap/README.md) for installation of the snapped version, 
 and use `--channel=latest/edge`.
 
-Enable the following app-service-configurable services for ekuiper, to use [filtering functions](https://docs.edgexfoundry.org/2.2/microservices/application/AppServiceConfigurable):
+Install and set profile for the following edgex-app-service-configurable for ekuiper, to use [filtering functions](https://docs.edgexfoundry.org/2.2/microservices/application/AppServiceConfigurable):
 ```bash
-snap set edgexfoundry app-service-configurable=on
+sudo snap install edgex-app-service-configurable
+sudo snap set edgex-app-service-configurable profile=rules-engine
+sudo snap start edgex-app-service-configurable
 ```
 
-After these steps, edgex-ekuiper snap and edgexfoundry services will be running as follows:
+After these steps, edgex-ekuiper, edgex-app-service-configurable and edgexfoundry services will be running as follows:
 ```bash
-$ sudo snap services
-Service                                    Startup   Current   Notes
-edgex-ekuiper.kuiper                       enabled   active    -
-edgexfoundry.app-service-configurable      enabled   active    -
-edgexfoundry.consul                        enabled   active    -
-edgexfoundry.core-command                  enabled   active    -
-edgexfoundry.core-data                     enabled   active    -
-edgexfoundry.core-metadata                 enabled   active    -
-edgexfoundry.device-virtual                disabled  inactive  -
-edgexfoundry.kong-daemon                   enabled   active    -
-edgexfoundry.kuiper                        disabled  inactive  -
-edgexfoundry.postgres                      enabled   active    -
-edgexfoundry.redis                         enabled   active    -
-edgexfoundry.security-bootstrapper-redis   enabled   inactive  -
-edgexfoundry.security-consul-bootstrapper  enabled   inactive  -
-edgexfoundry.security-proxy-setup          enabled   inactive  -
-edgexfoundry.security-secretstore-setup    enabled   inactive  -
-edgexfoundry.support-notifications         disabled  inactive  -
-edgexfoundry.support-scheduler             disabled  inactive  -
-edgexfoundry.sys-mgmt-agent                disabled  inactive  -
-edgexfoundry.vault                         enabled   active    -
+$ sudo snap services edgex-ekuiper edgex-app-service-configurable edgexfoundry
+Service                                                  Startup   Current   Notes
+edgex-app-service-configurable.app-service-configurable  disabled  active    -
+edgex-ekuiper.kuiper                                     enabled   active    -
+edgexfoundry.app-service-configurable                    disabled  inactive  -
+edgexfoundry.consul                                      enabled   active    -
+edgexfoundry.core-command                                enabled   active    -
+edgexfoundry.core-data                                   enabled   active    -
+edgexfoundry.core-metadata                               enabled   active    -
+edgexfoundry.device-virtual                              disabled  inactive  -
+edgexfoundry.kong-daemon                                 enabled   active    -
+edgexfoundry.kuiper                                      disabled  inactive  -
+edgexfoundry.postgres                                    enabled   active    -
+edgexfoundry.redis                                       enabled   active    -
+edgexfoundry.security-bootstrapper-redis                 enabled   inactive  -
+edgexfoundry.security-consul-bootstrapper                enabled   inactive  -
+edgexfoundry.security-proxy-setup                        enabled   inactive  -
+edgexfoundry.security-secretstore-setup                  enabled   inactive  -
+edgexfoundry.support-notifications                       disabled  inactive  -
+edgexfoundry.support-scheduler                           disabled  inactive  -
+edgexfoundry.sys-mgmt-agent                              disabled  inactive  -
+edgexfoundry.vault                                       enabled   active    -
 ```
 ## Snap Configuration
+The service starts by default, and can be restarted as follows. 
+It will pick up any change made to config files:
+```bash
+sudo snap restart edgex-ekuiper.kuiper
+```
+The service can be stopped as follows. The `--disable` option
+ensures that as well as stopping the service now, 
+it will not be automatically started on boot:
+```bash
+sudo snap stop --disable edgex-ekuiper.kuiper
+```
 The service can be started as follows. 
 The `--enable` option ensures that as well as starting the service now, 
 it will be automatically started on boot:
 ```bash
 sudo snap start --enable edgex-ekuiper.kuiper
 ```
-The service can be stopped as follows. The `--disable` option
-ensures that as well as stopping the service now, it will not be automatically started on boot:
-```bash
-sudo snap stop --disable edgex-ekuiper.kuiper
-```
 ### Configuration files
 The basic configuration file for ekuiper is at `/var/snap/edgex-ekuiper/current/etc/kuiper.yaml`. 
 For more details, please refer to [lf-edge/ekuiper docs](https://github.com/lf-edge/ekuiper/blob/master/docs/en_US/operation/config/configuration_file.md).
 
 The `/var/snap/edgex-ekuiper/current/etc` directory contains the configuration files of eKuiper. 
-Such as sources, sinks and connections configurations etc. 
+These include configurations such as for sources, sinks, and connections.
 ### Connect to edgexfoundry secure message bus
 By default, ekuiper enables its service on install. 
 If there is no secret file under `/var/snap/edgex-ekuiper/current/edgex-ekuiper/secrets-token.json`, 
-then it will run without edgexfoundry's secret. 
+then it connects to EdgeX message bus without authentication. 
 #### edgexfoundry security-on mode
 edgexfoundry has security turned on by default.
 
@@ -100,34 +95,19 @@ to enter the edgexfoundry's security message bus:
 ```bash
 sudo snap restart edgex-ekuiper
 ```
-#### edgexfoundry security-off mode
-When turning edgexfoundry security off: 
+### Work without edgex-app-service-configurable filtering:
 ```bash
-sudo snap set edgexfoundry security-secret-store=off
+sudo snap stop edgex-app-service-configurable
 ```
-There are some configurations need to be done on ekuiper side:
+Modify ekuiper's config files:
 ```bash
-# remove existing secret token file
-sudo rm -rf /var/snap/edgex-ekuiper/current/edgex-ekuiper/secrets-token.json
-# disconnect snaps
-sudo snap disconnect edgexfoundry:edgex-secretstore-token edgex-ekuiper:edgex-secretstore-token
-# restart ekuiper to pick up new configs, then enter security off mode
-sudo snap restart edgex-ekuiper
-```
-### Work without app-service-configurable filtering:
-```bash
-snap set edgexfoundry app-service-configurable=off
-```
-Change sources' `topic` from app-service-configurable to edgexfoundry message bus:
-```bash
+# Change sources' `topic` from edgex-app-service-configurable to edgexfoundry message bus:
 sudo nano /var/snap/edgex-ekuiper/current/etc/sources/edgex.yaml
 # change: 
 topic: rules-events
 # to:
 topic: edgex/events/#
-```
-Change sources' `messageType` from event (default) to request:
-```bash
+# Change sources' `messageType` from event (default) to request:
 sudo nano /var/snap/edgex-ekuiper/current/etc/sources/edgex.yaml
 # add:
 default:
