@@ -41,6 +41,7 @@ apps:
   kuiper:
     command: bin/kuiperd
     command-chain:
+      - bin/startup-env-var.sh
       - bin/setup-redis-credentials.sh
     daemon: simple
     environment:
