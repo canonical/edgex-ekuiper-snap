@@ -49,8 +49,8 @@ apps:
       VAULT_TOKEN_FILE: $SNAP_DATA/edgex-ekuiper/secrets-token.json
       SOURCE_FILE: $SNAP_DATA/etc/sources/edgex.yaml 
       CONNECTION_FILE: $SNAP_DATA/etc/connections/connection.yaml
-    install-mode: enable
-    restart-delay: 60s
+    install-mode: disable
+    restart-delay: 3s
     plugs: [network, network-bind]
 
   kuiper-cli:
