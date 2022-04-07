@@ -25,8 +25,6 @@ import (
 	hooks "github.com/canonical/edgex-snap-hooks/v2"
 )
 
-// var cli *hooks.CtlCli = hooks.NewSnapCtl()
-
 func main() {
 	if err := hooks.Init(false, "edgex-ekuiper"); err != nil {
 		fmt.Println(fmt.Sprintf("eedgex-ekuiper:configure: initialization failure: %v", err))
