@@ -29,6 +29,5 @@ func main() {
 	if err := hooks.Init(false, "edgex-ekuiper"); err != nil {
 		fmt.Println(fmt.Sprintf("eedgex-ekuiper:configure: initialization failure: %v", err))
 		os.Exit(1)
-
 	}
 }
