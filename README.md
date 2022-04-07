@@ -23,16 +23,20 @@ eKuiper is a trademark of LF Projects: https://lfprojects.org
 EdgeX ekuiper depends on several other edgexfoundry services.
 
 Please refer to [edgexfoundry Snap](https://github.com/edgexfoundry/edgex-go/blob/main/snap/README.md) for installation of the snapped version, 
-and use `--channel=latest/edge`.
+and use `--channel=latest/beta`.
 
 Install and set profile for the following edgex-app-service-configurable for ekuiper, to use [filtering functions](https://docs.edgexfoundry.org/2.2/microservices/application/AppServiceConfigurable):
 ```bash
 sudo snap install edgex-app-service-configurable
 sudo snap set edgex-app-service-configurable profile=rules-engine
-sudo snap start edgex-app-service-configurable
+sudo snap start --enable edgex-app-service-configurable
 ```
+For using eKuiper with App Service Configurable, it is recommended to setup the system as follows:
+- edgex-ekuiper and edgex-app-service-configurable should be active and enabled
+- edgexfoundry.kuiper and edgexfoundry.app-service-configurable should be inactive and disabled
+- edgexfoundry's core services should be active and enabled
 
-After these steps, edgex-ekuiper, edgex-app-service-configurable and edgexfoundry services will be running as follows:
+Verify that by executing the following command:
 ```bash
 $ sudo snap services edgex-ekuiper edgex-app-service-configurable edgexfoundry
 Service                                                  Startup   Current   Notes
@@ -91,7 +95,7 @@ edgexfoundry has security turned on by default.
 - If edgexfoundry has been installed before ekuiper, ekuiper will get secret automatically.
 
 - If edgexfoundry has been installed after ekuiper, the running ekuiper needs `snap restart` pick up the secret, 
-to enter the edgexfoundry's security message bus:
+to enter the edgexfoundry's security message bus (see issue [#18](https://github.com/canonical/edgex-ekuiper-snap/issues/18)):
 ```bash
 sudo snap restart edgex-ekuiper
 ```
