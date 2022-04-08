@@ -1,0 +1,12 @@
+#!/bin/bash -e
+
+LOG_PREFIX=$SNAP_INSTANCE_NAME:configure
+EDGEX_SECURITY=$(snapctl get edgex-security)
+
+if [ -n "$EDGEX_SECURITY" ]; then
+  # validate the value
+  if [ "$EDGEX_SECURITY" != "off" ] && [ "$EDGEX_SECURITY" != "on" ] ; then
+    logger --stderr "$LOG_PREFIX: edgex-security must be either 'on' or 'off'. When unset, it defaults to 'on'"
+    exit 1
+  fi
+fi
