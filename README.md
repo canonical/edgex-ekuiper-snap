@@ -86,19 +86,13 @@ For more details, please refer to [lf-edge/ekuiper docs](https://github.com/lf-e
 The `/var/snap/edgex-ekuiper/current/etc` directory contains the configuration files of eKuiper. 
 These include configurations such as for sources, sinks, and connections.
 ### Connect to edgexfoundry secure message bus
-By default, ekuiper enables its service on install. 
-If there is no secret file under `/var/snap/edgex-ekuiper/current/edgex-ekuiper/secrets-token.json`, 
-then it connects to EdgeX message bus without authentication. 
-#### edgexfoundry security-on mode
-edgexfoundry has security turned on by default.
+By default, ekuiper enables its service on install, edgexfoundry has security turned on. 
+ekuiper will get edgexfoundry's secret automatically.
 
-- If edgexfoundry has been installed before ekuiper, ekuiper will get secret automatically.
+If edgexfoundry is not ready yet, 
+then there will be no secret file coming from edgexfoundry under `/var/snap/edgex-ekuiper/current/edgex-ekuiper/secrets-token.json`.
+In this case,  ekuiper will restart to search authentication periodically. 
 
-- If edgexfoundry has been installed after ekuiper, the running ekuiper needs `snap restart` pick up the secret, 
-to enter the edgexfoundry's security message bus (see issue [#18](https://github.com/canonical/edgex-ekuiper-snap/issues/18)):
-```bash
-sudo snap restart edgex-ekuiper
-```
 ### Work without edgex-app-service-configurable filtering:
 ```bash
 sudo snap stop edgex-app-service-configurable
