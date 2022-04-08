@@ -6,4 +6,4 @@ EDGEX_SECURITY=$(snapctl get edgex-security)
 if [ "$EDGEX_SECURITY" != "off" ] && [ "$EDGEX_SECURITY" != "on" ] ; then
 	logger --stderr "$LOG_PREFIX: edgex-security can only be set to either 'on' or 'off'. When unset, it defaults to 'on'"
   exit 1
-else
+fi
