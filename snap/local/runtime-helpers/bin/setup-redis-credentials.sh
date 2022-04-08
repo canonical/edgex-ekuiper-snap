@@ -1,6 +1,4 @@
-#!/bin/bash
-
-set -e
+#!/bin/bash -e
 
 LOG_PREFIX=$SNAP_INSTANCE_NAME:configure-kuiper
 EDGEX_SECURITY=$(snapctl get edgex-security)
@@ -73,7 +71,7 @@ else
 
 		logger "$LOG_PREFIX: configured eKuiper to authenticate with Redis, using credentials fetched from Vault"
 	else
-		logger --stderr "$LOG_PREFIX: unable to configure eKuiper to authenticate with Redis: unable to query Redis token from Vault: Vault token not available. Retrying"
+		logger --stderr "$LOG_PREFIX: unable to configure eKuiper to authenticate with Redis: unable to query Redis token from Vault: Vault token not available. Exiting..."
 		exit 1
 	fi
 fi
