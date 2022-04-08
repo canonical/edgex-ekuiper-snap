@@ -102,11 +102,3 @@ parts:
       - -*.gz
       - -*.zip
 
-  hooks:
-    source: snap/local/hooks
-    plugin: make
-    override-build: |
-      cd $SNAPCRAFT_PART_SRC
-      make build
-      install -DT ./cmd/configure/configure "$SNAPCRAFT_PART_INSTALL/snap/hooks/configure"
-
