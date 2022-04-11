@@ -132,6 +132,7 @@ Event filtering can also be done using eKuiper rules.
 
 To do so, modify eKuiper's config file (`/var/snap/edgex-ekuiper/current/etc/sources/edgex.yaml`):
 1. Change `topic` from App Service Configurable's topic to subscribe to all edgex events:
+
 from:
 ```
 topic: rules-events
