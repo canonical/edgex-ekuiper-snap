@@ -19,28 +19,60 @@ eKuiper is a trademark of LF Projects: https://lfprojects.org
 ## Snap Installation
 [![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-white.svg)](https://snapcraft.io/edgex-ekuiper)
 
-### Install and configure dependencies
-EdgeX ekuiper depends on several other edgexfoundry services.
+Please refer to the [edgex-ekuiper] snap store listing for installation and releases.
 
-Please refer to [edgexfoundry Snap](https://github.com/edgexfoundry/edgex-go/blob/main/snap/README.md) for installation of the snapped version, 
-and use `--channel=latest/beta`.
+### EdgeX Integration
+This snap works together with on several other EdgeX services.
 
-Install and set profile for the following edgex-app-service-configurable for ekuiper, to use [filtering functions](https://docs.edgexfoundry.org/2.2/microservices/application/AppServiceConfigurable):
-```bash
-sudo snap install edgex-app-service-configurable
-sudo snap set edgex-app-service-configurable profile=rules-engine
-sudo snap start --enable edgex-app-service-configurable
-```
-For using eKuiper with App Service Configurable, it is recommended to setup the system as follows:
-- edgex-ekuiper and edgex-app-service-configurable should be active and enabled
-- edgexfoundry.kuiper and edgexfoundry.app-service-configurable should be inactive and disabled
-- edgexfoundry's core services should be active and enabled
+Please refer to [EdgeX Getting Started](https://docs.edgexfoundry.org/2.2/getting-started/Ch-GettingStartedUsers/) for details.
+To install the platform services using a snap, refer to [edgexfoundry].
+
+#### Message Bus (Redis)
+The eKuiper service connects to Redis and subscribes to events.
+By default, the connection needs authentication.
+
+#### Secret Store (Vault)
+When this snap is installed together with the [edgexfoundry] snap, it will use the `edgex-secretstore-token` content interface to receive a Vault token for an addon-service named `edgex-ekuiper`. 
+
+> **Note**  
+> The [edgexfoundry] `2.2.0-dev.32` or later is configured to issue the token automatically; see [PR #3888](https://github.com/edgexfoundry/edgex-go/pull/3888). This version is currently available in `latest/beta` channel.
+>
+> For versions prior to this, the `edgex-ekuiper` add-on service with `redisdb` known secret token can be added by configuration. Please refer to [Configuring Add-on Services](https://docs.edgexfoundry.org/2.2/security/Ch-Configuring-Add-On-Services/) and edgexfoundry snap [readme](https://github.com/edgexfoundry/edgex-go/tree/jakarta/snap#secret-store-settings-prefix-envsecurity-secret-store) for details.
+
+The token is expected at `/var/snap/edgex-ekuiper/current/edgex-ekuiper/secrets-token.json` and may be supplied via other means.
+
+This snap uses the Vault token to query Redis credentials from Vault. It then injects the credentials into relevant eKuiper config files.
+
+If the token is not available, the service will exit with error and restart automatically.
+
+> **Option**  
+> To disable the Vault token requirement and skip credentials query and config injection, set the following option:
+> ```
+> sudo snap set edgex-ekuiper edgex-security=off
+> ```
+> *This option is experimental and subject to change without notice.*
+
+#### App Service Configurable
+The default configuration expects that events are filtered by [App Service Configurable](https://github.com/edgexfoundry/app-service-configurable) and published to the EdgeX message bus under `rules-events` topic.
+
+> **Note**  
+> This behavior may change in future to make eKuiper work without App Service Configurable by default.
+
+To enable the expected [filtering](https://docs.edgexfoundry.org/2.2/microservices/application/AppServiceConfigurable) using the [app-service-configurable] snap; install it, set the profile to `rules-engine`, and start it.
+
+To receive all EdgeX events (not just those filtered by Add Service Configurable), refer to configuration details below.
+
+#### System overview
+The default setup described above will prepare the system such that:
+- `edgex-ekuiper` and `edgex-app-service-configurable` are active and enabled
+- `edgexfoundry.kuiper` and `edgexfoundry.app-service-configurable` are inactive and disabled - these are embedded versions of kuiper and App Service Configurable which we do not use here.
+- `edgexfoundry`'s `vault` and `redis`, along with other core services are active and enabled
 
 Verify that by executing the following command:
 ```bash
 $ sudo snap services edgex-ekuiper edgex-app-service-configurable edgexfoundry
 Service                                                  Startup   Current   Notes
-edgex-app-service-configurable.app-service-configurable  disabled  active    -
+edgex-app-service-configurable.app-service-configurable  enabled   active    -
 edgex-ekuiper.kuiper                                     enabled   active    -
 edgexfoundry.app-service-configurable                    disabled  inactive  -
 edgexfoundry.consul                                      enabled   active    -
@@ -61,67 +93,81 @@ edgexfoundry.support-scheduler                           disabled  inactive  -
 edgexfoundry.sys-mgmt-agent                              disabled  inactive  -
 edgexfoundry.vault                                       enabled   active    -
 ```
+
+To change the default configuration, refer below.
+
 ## Snap Configuration
-The service starts by default, and can be restarted as follows. 
-It will pick up any change made to config files:
+The eKuiper service is started by default after installation.
+
+Config files are loaded on startup.
+To restart a running instance and load new configurations:
 ```bash
 sudo snap restart edgex-ekuiper.kuiper
 ```
+
 The service can be stopped as follows. The `--disable` option
 ensures that as well as stopping the service now, 
 it will not be automatically started on boot:
 ```bash
 sudo snap stop --disable edgex-ekuiper.kuiper
 ```
+
 The service can be started as follows. 
 The `--enable` option ensures that as well as starting the service now, 
 it will be automatically started on boot:
 ```bash
 sudo snap start --enable edgex-ekuiper.kuiper
 ```
+
 ### Configuration files
-The basic configuration file for ekuiper is at `/var/snap/edgex-ekuiper/current/etc/kuiper.yaml`. 
-For more details, please refer to [lf-edge/ekuiper docs](https://github.com/lf-edge/ekuiper/blob/master/docs/en_US/operation/config/configuration_file.md).
+The basic server configuration file for eKuiper is at `/var/snap/edgex-ekuiper/current/etc/kuiper.yaml`.
+For details, please refer to [this](https://github.com/lf-edge/ekuiper/blob/master/docs/en_US/operation/config/configuration_file.md) eKuiper document.
 
 The `/var/snap/edgex-ekuiper/current/etc` directory contains the configuration files of eKuiper. 
-These include configurations such as for sources, sinks, and connections.
-### Connect to edgexfoundry secure message bus
-By default, ekuiper enables its service on install, edgexfoundry has security turned on. 
-ekuiper will get edgexfoundry's secret automatically.
+These include the basic server configuration, as well as configurations such as for sources, sinks, and connections.
 
-If edgexfoundry is not ready yet, 
-then there will be no secret file coming from edgexfoundry under `/var/snap/edgex-ekuiper/current/edgex-ekuiper/secrets-token.json`.
-In this case,  ekuiper will restart to search authentication periodically. 
+### Work without App Service Configurable filtering:
+Instead of subscribing to events filtered by App Service Configurable, eKuiper can be configured to subscribe to all EdgeX events.
+Event filtering can also be done using eKuiper rules.
 
-### Work without edgex-app-service-configurable filtering:
-```bash
-sudo snap stop edgex-app-service-configurable
+To do so, modify eKuiper's config file (`/var/snap/edgex-ekuiper/current/etc/sources/edgex.yaml`):
+1. Change `topic` from App Service Configurable's topic to subscribe to all edgex events:
+
+from:
 ```
-Modify ekuiper's config files:
-```bash
-# Change sources' `topic` from edgex-app-service-configurable to edgexfoundry message bus:
-sudo nano /var/snap/edgex-ekuiper/current/etc/sources/edgex.yaml
-# change: 
 topic: rules-events
-# to:
+``` 
+to:
+```
 topic: edgex/events/#
-# Change sources' `messageType` from event (default) to request:
-sudo nano /var/snap/edgex-ekuiper/current/etc/sources/edgex.yaml
-# add:
+```
+
+2. Change `messageType` from event (default) to request by adding:
+```
 default:
 	messageType: request
 ```
-Pick up any changes made to config files:
+
+3. Restart the service to pick up the changes made to the config file.
+
+4. If App Service Configurable is installed with `rules-engine` profile for eKuiper, stop (or remove) it:
 ```bash
-sudo snap restart edgex-ekuiper
+sudo snap stop edgex-app-service-configurable
 ```
+
 ### Viewing logs
-To view the logs for the service in the edgex-ekuiper snap:
+For example, to print 100 lines and follow the logs:
 ```
-sudo snap logs -f edgex-ekuiper.kuiper
+snap logs -n=100 -f edgex-ekuiper
 ```
+
 ## Tagging
 This repository is tagged after the eKuiper project with a [semver build metadata](https://semver.org/#spec-item-10) `snap` suffix.
 For example, if eKuiper is tagged as `1.4.3`, this repository will be tagged as `1.4.3+snap`, `1.4.3+snap.2`, `1.4.3+snap.N`. The build version increments indicate updates to the snap packaging on top of the same eKuiper release.
 
 The [release](https://github.com/canonical/edgex-ekuiper-snap/actions/workflows/release.yml) Github workflow can be used to manually tag and release, enforcing the above schema.
+
+
+[edgex-ekuiper]: https://snapcraft.io/edgex-ekuiper
+[edgexfoundry]: https://snapcraft.io/edgexfoundry
+[app-service-configurable]: https://snapcraft.io/edgex-app-service-configurable
