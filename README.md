@@ -1,4 +1,5 @@
 # EdgeX eKuiper Snap
+[![edgex-ekuiper](https://snapcraft.io/edgex-ekuiper/badge.svg)](https://snapcraft.io/edgex-ekuiper)
 
 eKuiper is a lightweight IoT edge analytics software.
 
@@ -16,16 +17,15 @@ eKuiper source code: https://github.com/lf-edge/ekuiper
 
 eKuiper is a trademark of LF Projects: https://lfprojects.org
 
-## Snap Installation
-[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-white.svg)](https://snapcraft.io/edgex-ekuiper)
+The snap is built automatically and published on the Snap Store as [edgex-ekuiper].
 
+## Snap Installation
 Please refer to the [edgex-ekuiper] snap store listing for installation and releases.
 
 ### EdgeX Integration
-This snap works together with on several other EdgeX services.
+This snap works together with several other EdgeX services.
 
-Please refer to [EdgeX Getting Started](https://docs.edgexfoundry.org/2.2/getting-started/Ch-GettingStartedUsers/) for details.
-To install the platform services using a snap, refer to [edgexfoundry].
+Please refer to [EdgeX Getting Started](https://docs.edgexfoundry.org/2.2/getting-started/Ch-GettingStartedUsers/) for setting up the platform using snaps.
 
 #### Message Bus (Redis)
 The eKuiper service connects to Redis and subscribes to events.
