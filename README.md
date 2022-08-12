@@ -142,10 +142,14 @@ to:
 topic: edgex/events/#
 ```
 
-2. Change `messageType` from event (default) to request by adding:
+2. Change `messageType` from event (default) to request:
+from:
 ```
-default:
-	messageType: request
+messageType: event
+```
+to:
+```
+messageType: request
 ```
 
 3. Restart the service to pick up the changes made to the config file.
