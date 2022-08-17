@@ -131,29 +131,9 @@ Instead of subscribing to events filtered by App Service Configurable, eKuiper c
 Event filtering can also be done using eKuiper rules.
 
 To do so, modify eKuiper's config file (`/var/snap/edgex-ekuiper/current/etc/sources/edgex.yaml`):
-1. Change `topic` from App Service Configurable's topic to subscribe to all edgex events:
-
-from:
-```
-topic: rules-events
-``` 
-to:
-```
-topic: edgex/events/#
-```
-
-2. Change `messageType` from event (default) to request:
-from:
-```
-messageType: event
-```
-to:
-```
-messageType: request
-```
-
-3. Restart the service to pick up the changes made to the config file.
-
+1. Change `default.topic` from App Service Configurable's topic `rules-events` to `edgex/events/#` subscribe to all edgex events
+2. Change value of `default.messageType` from `event` to `request`
+3. Restart the service to pick up the changes made to the config file
 4. If App Service Configurable is installed with `rules-engine` profile for eKuiper, stop (or remove) it:
 ```bash
 sudo snap stop edgex-app-service-configurable
