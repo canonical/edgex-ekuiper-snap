@@ -44,7 +44,13 @@ apps:
       - bin/setup-redis-credentials.sh
     daemon: simple
     environment:
-      KuiperBaseKey: $SNAP_DATA
+      KUIPER_BASE_KEY: $SNAP_DATA
+      KUIPER_BASIC_DEBUG: "true"
+      KUIPER_BASIC_RESTPORT: 59720
+      KUIPER_BASIC_CONSOLELOG: "true"
+      KUIPER_BASIC_FILELOG: "true"
+      KUIPER_BASIC_IP: "localhost"
+      KUIPER_BASIC_RESTIP: "localhost"
       VAULT_TOKEN_FILE: $SNAP_DATA/edgex-ekuiper/secrets-token.json
       SOURCE_FILE: $SNAP_DATA/etc/sources/edgex.yaml 
       CONNECTION_FILE: $SNAP_DATA/etc/connections/connection.yaml
@@ -88,7 +94,6 @@ parts:
 
       tar -xvf kuiper*.tar.gz --strip-components=1
 
-      install "$SNAPCRAFT_PROJECT_DIR/etc/kuiper.yaml" "$SNAPCRAFT_PART_INSTALL/etc"
       install "$SNAPCRAFT_PROJECT_DIR/etc/edgex.yaml" "$SNAPCRAFT_PART_INSTALL/etc/sources"
       install "$SNAPCRAFT_PROJECT_DIR/etc/connection.yaml" "$SNAPCRAFT_PART_INSTALL/etc/connections"
 
