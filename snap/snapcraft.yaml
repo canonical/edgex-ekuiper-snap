@@ -80,13 +80,12 @@ parts:
       cd $SNAPCRAFT_PART_SRC
       
       export BUILD_PATH=$SNAPCRAFT_PART_BUILD
-      export PACKAGES_PATH=$SNAPCRAFT_PART_INSTALL
       make build_with_edgex
-      make real_pkg
+  
+      PACKAGE_NAME=kuiper-$(git describe --tags --always)-$(go env GOOS)-$(go env GOARCH)
+      cp -r $SNAPCRAFT_PART_BUILD/$PACKAGE_NAME/* $SNAPCRAFT_PART_INSTALL
 
       cd $SNAPCRAFT_PART_INSTALL
-
-      tar -xvf kuiper*.tar.gz --strip-components=1
 
       install "$SNAPCRAFT_PROJECT_DIR/etc/kuiper.yaml" "$SNAPCRAFT_PART_INSTALL/etc"
       install "$SNAPCRAFT_PROJECT_DIR/etc/edgex.yaml" "$SNAPCRAFT_PART_INSTALL/etc/sources"
