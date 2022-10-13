@@ -2,11 +2,21 @@
 
 LOG_PREFIX=$SNAP_INSTANCE_NAME:configure
 EDGEX_SECURITY=$(snapctl get edgex-security)
+SOURCE=$(snapctl get source)
 
 if [ -n "$EDGEX_SECURITY" ]; then
   # validate the value
   if [ "$EDGEX_SECURITY" != "off" ] && [ "$EDGEX_SECURITY" != "on" ] ; then
     logger --stderr "$LOG_PREFIX: edgex-security must be either 'on' or 'off'. When unset, it defaults to 'on'"
+    exit 1
+  fi
+fi
+
+
+if [ -n "$SOURCE" ]; then
+  # validate the value
+  if [ "$SOURCE" != "app-service-configurable" ] && [ "$SOURCE" != "" ] ; then
+    logger --stderr "$LOG_PREFIX: source must be either 'app-service-configurable' or ''. When unset, it defaults to '' using edgex message bus"
     exit 1
   fi
 fi

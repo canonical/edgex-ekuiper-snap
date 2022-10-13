@@ -42,13 +42,16 @@ apps:
     command: bin/kuiperd
     command-chain:
       - bin/setup-redis-credentials.sh
+      - bin/service-config-overrides.sh
     daemon: simple
     environment:
       KuiperBaseKey: $SNAP_DATA
       VAULT_TOKEN_FILE: $SNAP_DATA/edgex-ekuiper/secrets-token.json
       SOURCE_FILE: $SNAP_DATA/etc/sources/edgex.yaml 
       CONNECTION_FILE: $SNAP_DATA/etc/connections/connection.yaml
-    install-mode: enable
+      EDGEX__DEFAULT__TOPIC: edgex/events/#
+      EDGEX__DEFAULT__MESSAGETYPE: request
+    install-mode: disable
     restart-delay: 3s
     plugs: [network, network-bind]
 
