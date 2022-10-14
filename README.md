@@ -52,27 +52,26 @@ If the token is not available, the service will exit with error and restart auto
 > ```
 > *This option is experimental and subject to change without notice.*
 
-#### App Service Configurable
-The default configuration expects that events are filtered by [App Service Configurable](https://github.com/edgexfoundry/app-service-configurable) and published to the EdgeX message bus under `rules-events` topic.
+#### EdgeX events source
+There are two types of EdgeX events sources: EdgeX(default) and app-service-configurable. 
 
-> **Note**  
-> This behavior may change in future to make eKuiper work without App Service Configurable by default.
+eKuiper subscribes to all EdgeX events by default.
+The default configuration expects that events are published to the EdgeX message bus under `edgex/events/#` topic.
 
-To enable the expected [filtering](https://docs.edgexfoundry.org/2.2/microservices/application/AppServiceConfigurable) using the [app-service-configurable] snap; install it, set the profile to `rules-engine`, and start it.
 
-To receive all EdgeX events (not just those filtered by Add Service Configurable), refer to configuration details below.
+To enable [filtering](https://docs.edgexfoundry.org/latest/microservices/application/AppServiceConfigurable) using the [app-service-configurable] snap, 
+please  refer to [Work with App Service Configurable filtering](###work-with-app-service-configurable-filtering) details below.
 
 #### System overview
 The default setup described above will prepare the system such that:
-- `edgex-ekuiper` and `edgex-app-service-configurable` are active and enabled
+- `edgex-ekuiper` is active and enabled
 - `edgexfoundry.kuiper` and `edgexfoundry.app-service-configurable` are inactive and disabled - these are embedded versions of kuiper and App Service Configurable which we do not use here.
 - `edgexfoundry`'s `vault` and `redis`, along with other core services are active and enabled
 
 Verify that by executing the following command:
 ```bash
-$ sudo snap services edgex-ekuiper edgex-app-service-configurable edgexfoundry
+$ sudo snap services edgex-ekuiper edgexfoundry
 Service                                                  Startup   Current   Notes
-edgex-app-service-configurable.app-service-configurable  enabled   active    -
 edgex-ekuiper.kuiper                                     enabled   active    -
 edgexfoundry.app-service-configurable                    disabled  inactive  -
 edgexfoundry.consul                                      enabled   active    -
@@ -126,18 +125,23 @@ For details, please refer to [this](https://github.com/lf-edge/ekuiper/blob/mast
 The `/var/snap/edgex-ekuiper/current/etc` directory contains the configuration files of eKuiper. 
 These include the basic server configuration, as well as configurations such as for sources, sinks, and connections.
 
-### Work without App Service Configurable filtering:
-Instead of subscribing to events filtered by App Service Configurable, eKuiper can be configured to subscribe to all EdgeX events.
-Event filtering can also be done using eKuiper rules.
+### Work with App Service Configurable filtering:
+Instead of subscribing to subscribe to all EdgeX events, eKuiper can be configured to subscribe to events filtered by App Service Configurable.
 
-To do so, modify eKuiper's config file (`/var/snap/edgex-ekuiper/current/etc/sources/edgex.yaml`):
-1. Change value of `default.topic` from App Service Configurable's topic `rules-events` to `edgex/events/#` in order to subscribe to all edgex events
-2. Change value of `default.messageType` from `event` to `request`
-3. Restart the service to pick up the changes made to the config file
-4. If App Service Configurable is installed with `rules-engine` profile for eKuiper, stop (or remove) it:
+To do so, install edgex-app-service-configurable, and set profile to `rule-engine`:
 ```bash
-sudo snap stop edgex-app-service-configurable
+snap install edgex-app-service-configurable
+snap set edgex-app-service-configurable profile=rules-engine
+snap start edgex-app-service-configurable
+````
+set eKuiper's source to `app-service-cofigurable`:
+```bash
+# change ekuiper's default topic from 'rules-event' to 'edgex/events/#', default messageType from 'event' to 'request'
+snap set edgex-ekuiper source=app-service-configurable
+# restart the service to pick up the changes made to the config file
+snap restart edgex-ekuiper
 ```
+
 
 ### Viewing logs
 For example, to print 100 lines and follow the logs:
