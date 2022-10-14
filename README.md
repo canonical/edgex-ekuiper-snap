@@ -25,7 +25,7 @@ Please refer to the [edgex-ekuiper] snap store listing for installation and rele
 ### EdgeX Integration
 This snap works together with several other EdgeX services.
 
-Please refer to [EdgeX Getting Started](https://docs.edgexfoundry.org/2.2/getting-started/Ch-GettingStartedUsers/) for setting up the platform using snaps.
+Please refer to [EdgeX Getting Started](https://docs.edgexfoundry.org/latest/getting-started/Ch-GettingStartedUsers/) for setting up the platform using snaps.
 
 #### Message Bus (Redis)
 The eKuiper service connects to Redis and subscribes to events.
@@ -37,7 +37,7 @@ When this snap is installed together with the [edgexfoundry] snap, it will use t
 > **Note**  
 > The [edgexfoundry] `2.2.0-dev.32` or later is configured to issue the token automatically; see [PR #3888](https://github.com/edgexfoundry/edgex-go/pull/3888). This version is currently available in `latest/beta` channel.
 >
-> For versions prior to this, the `edgex-ekuiper` add-on service with `redisdb` known secret token can be added by configuration. Please refer to [Configuring Add-on Services](https://docs.edgexfoundry.org/2.2/security/Ch-Configuring-Add-On-Services/) and edgexfoundry snap [readme](https://github.com/edgexfoundry/edgex-go/tree/jakarta/snap#secret-store-settings-prefix-envsecurity-secret-store) for details.
+> For versions prior to this, the `edgex-ekuiper` add-on service with `redisdb` known secret token can be added by configuration. Please refer to [Configuring Add-on Services](https://docs.edgexfoundry.org/latest/security/Ch-Configuring-Add-On-Services/) and edgexfoundry snap [readme](https://github.com/edgexfoundry/edgex-go/tree/jakarta/snap#secret-store-settings-prefix-envsecurity-secret-store) for details.
 
 The token is expected at `/var/snap/edgex-ekuiper/current/edgex-ekuiper/secrets-token.json` and may be supplied via other means.
 
@@ -60,7 +60,7 @@ The default configuration expects that events are published to the EdgeX message
 
 
 To enable [filtering](https://docs.edgexfoundry.org/latest/microservices/application/AppServiceConfigurable) using the [app-service-configurable] snap, 
-please  refer to [Work with App Service Configurable filtering](###work-with-app-service-configurable-filtering) details below.
+please  refer to [Work with App Service Configurable filtering](#work-with-app-service-configurable-filtering) details below.
 
 #### System overview
 The default setup described above will prepare the system such that:
