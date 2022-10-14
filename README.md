@@ -53,8 +53,6 @@ If the token is not available, the service will exit with error and restart auto
 > *This option is experimental and subject to change without notice.*
 
 #### EdgeX events source
-There are two types of EdgeX events sources: EdgeX(default) and app-service-configurable. 
-
 eKuiper subscribes to all EdgeX events by default.
 The default configuration expects that events are published to the EdgeX message bus under `edgex/events/#` topic.
 
@@ -64,7 +62,7 @@ please  refer to [Work with App Service Configurable filtering](#work-with-app-s
 
 #### System overview
 The default setup described above will prepare the system such that:
-- `edgex-ekuiper` is active and enabled
+- `edgex-ekuiper` is inactive and disabled
 - `edgexfoundry.kuiper` and `edgexfoundry.app-service-configurable` are inactive and disabled - these are embedded versions of kuiper and App Service Configurable which we do not use here.
 - `edgexfoundry`'s `vault` and `redis`, along with other core services are active and enabled
 
@@ -138,8 +136,8 @@ Then, set eKuiper's source to `app-service-configurable`:
 ```bash
 # change ekuiper's default topic from 'rules-event' to 'edgex/events/#', default messageType from 'event' to 'request'
 snap set edgex-ekuiper source=app-service-configurable
-# restart the service to pick up the changes made to the config file
-snap restart edgex-ekuiper
+# start the service to pick up the changes made to the config file
+snap start edgex-ekuiper
 ```
 
 
