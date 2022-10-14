@@ -126,15 +126,15 @@ The `/var/snap/edgex-ekuiper/current/etc` directory contains the configuration f
 These include the basic server configuration, as well as configurations such as for sources, sinks, and connections.
 
 ### Work with App Service Configurable filtering:
-Instead of subscribing to subscribe to all EdgeX events, eKuiper can be configured to subscribe to events filtered by App Service Configurable.
+Instead of subscribing to all EdgeX events, eKuiper can be configured to subscribe to events filtered by EdgeX App Service Configurable.
 
-To do so, install edgex-app-service-configurable, and set profile to `rule-engine`:
+To do so, install [edgex-app-service-configurable](https://snapcraft.io/edgex-app-service-configurable), and set its profile to `rules-engine`:
 ```bash
 snap install edgex-app-service-configurable
 snap set edgex-app-service-configurable profile=rules-engine
 snap start edgex-app-service-configurable
 ````
-set eKuiper's source to `app-service-cofigurable`:
+Then, set eKuiper's source to `app-service-configurable`:
 ```bash
 # change ekuiper's default topic from 'rules-event' to 'edgex/events/#', default messageType from 'event' to 'request'
 snap set edgex-ekuiper source=app-service-configurable
