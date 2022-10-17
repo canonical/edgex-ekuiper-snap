@@ -82,8 +82,7 @@ parts:
       export BUILD_PATH=$SNAPCRAFT_PART_BUILD
       make build_with_edgex
   
-      PACKAGE_NAME=kuiper-$(git describe --tags --always)-$(go env GOOS)-$(go env GOARCH)
-      cp -r $SNAPCRAFT_PART_BUILD/$PACKAGE_NAME/* $SNAPCRAFT_PART_INSTALL
+      find $SNAPCRAFT_PART_BUILD/kuiper-* -maxdepth 1 -exec cp -r '{}' $SNAPCRAFT_PART_INSTALL/ \;
 
       cd $SNAPCRAFT_PART_INSTALL
 
