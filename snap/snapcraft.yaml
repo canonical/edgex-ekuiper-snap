@@ -82,7 +82,7 @@ parts:
       export BUILD_PATH=$SNAPCRAFT_PART_BUILD
       make build_with_edgex
   
-      find $SNAPCRAFT_PART_BUILD/kuiper-* -maxdepth 1 -exec cp -r '{}' $SNAPCRAFT_PART_INSTALL/ \;
+      find $SNAPCRAFT_PART_BUILD/kuiper-* -maxdepth 1 -mindepth 1 -exec cp -r '{}' $SNAPCRAFT_PART_INSTALL/ \;
 
       install "$SNAPCRAFT_PROJECT_DIR/etc/kuiper.yaml" "$SNAPCRAFT_PART_INSTALL/etc"
       install "$SNAPCRAFT_PROJECT_DIR/etc/edgex.yaml" "$SNAPCRAFT_PART_INSTALL/etc/sources"
