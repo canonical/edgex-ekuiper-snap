@@ -42,7 +42,7 @@ apps:
     command: bin/kuiperd
     command-chain:
       - bin/setup-redis-credentials.sh
-      - bin/service-config-overrides.sh
+      - bin/source-env-file.sh
     daemon: simple
     environment:
       KuiperBaseKey: $SNAP_DATA
@@ -60,6 +60,16 @@ apps:
     plugs: [home, network, network-bind]
 
 parts:
+  helper-go:
+    source: snap/local/helper-go
+    plugin: make
+    build-snaps:
+      - go/1.18/stable
+    override-build: |
+      cd $SNAPCRAFT_PART_SRC
+      make build
+      install -DT ./helper-go $SNAPCRAFT_PART_INSTALL/bin/helper-go
+
   runtime-helpers:
     plugin: dump
     source: snap/local/runtime-helpers
@@ -90,11 +100,12 @@ parts:
       install "$SNAPCRAFT_PROJECT_DIR/etc/connection.yaml" "$SNAPCRAFT_PART_INSTALL/etc/connections"
 
       install -DT "$SNAPCRAFT_PART_SRC/LICENSE" "$SNAPCRAFT_PART_INSTALL/usr/share/doc/kuiper/LICENSE"
-
     stage:
-      - -etc/services/
       - -etc/ldap/
       - -etc/mgmt/
-      - -*.gz
-      - -*.zip
 
+  local-bin:
+    plugin: dump
+    source: snap/local/bin
+    organize:
+      source-env-file.sh: bin/source-env-file.sh

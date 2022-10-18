@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 LOG_PREFIX=$SNAP_INSTANCE_NAME:configure-kuiper
-EDGEX_SECURITY=$(snapctl get edgex-security)
+EDGEX_SECURITY=$(snapctl get config.edgex-security)
 logger "$LOG_PREFIX: started"
 
 for var in VAULT_TOKEN_FILE SOURCE_FILE CONNECTION_FILE ; do

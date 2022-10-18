@@ -1,22 +1,3 @@
 #!/bin/bash -e
 
-LOG_PREFIX=$SNAP_INSTANCE_NAME:configure
-EDGEX_SECURITY=$(snapctl get edgex-security)
-SOURCE=$(snapctl get source)
-
-if [ -n "$EDGEX_SECURITY" ]; then
-  # validate the value
-  if [ "$EDGEX_SECURITY" != "off" ] && [ "$EDGEX_SECURITY" != "on" ] ; then
-    logger --stderr "$LOG_PREFIX: edgex-security must be either 'on' or 'off'. When unset, it defaults to 'on'"
-    exit 1
-  fi
-fi
-
-
-if [ -n "$SOURCE" ]; then
-  # validate the value
-  if [ "$SOURCE" != "app-service-configurable" ] && [ "$SOURCE" != "" ] ; then
-    logger --stderr "$LOG_PREFIX: invalid source value: '$SOURCE'. The only supported value is 'app-service-configurable' to override default.topic to 'rules-events' and default.messageType to 'event', to subscribe to events filtered by EdgeX App Service Configurable."
-    exit 1
-  fi
-fi
+exec $SNAP/bin/helper-go configure
