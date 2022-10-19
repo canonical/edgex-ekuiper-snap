@@ -48,7 +48,7 @@ If the token is not available, the service will exit with error and restart auto
 > **Option**  
 > To disable the Vault token requirement and skip credentials query and config injection, set the following option:
 > ```
-> sudo snap set edgex-ekuiper edgex-security=off
+> sudo snap set edgex-ekuiper config.edgex-security=off
 > ```
 > *This option is experimental and subject to change without notice.*
 
@@ -136,8 +136,6 @@ Then, set eKuiper to subscribe to `app-service-configurable` by changing ekuiper
 default topic from 'rules-event' to 'edgex/events/#', default messageType from 'event' to 'request' :
 ```bash
 snap set edgex-ekuiper config.edgex-default-topic=rules-events config.edgex-default-messagetype=event
-# start the service to pick up the changes made to the config file
-snap restart edgex-ekuiper
 ```
 
 

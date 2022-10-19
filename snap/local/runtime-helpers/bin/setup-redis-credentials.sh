@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-LOG_PREFIX=$SNAP_INSTANCE_NAME:configure-kuiper
+LOG_PREFIX=$SNAP_INSTANCE_NAME:configure-redis-credentials
 EDGEX_SECURITY=$(snapctl get config.edgex-security)
 logger "$LOG_PREFIX: started"
 
