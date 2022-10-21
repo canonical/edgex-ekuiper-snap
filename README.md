@@ -48,7 +48,7 @@ If the token is not available, the service will exit with error and restart auto
 > **Option**  
 > To disable the Vault token requirement and skip credentials query and config injection, set the following option:
 > ```
-> sudo snap set edgex-ekuiper config.edgex-security=off
+> sudo snap set edgex-ekuiper config.edgex-security-secret-store=false
 > ```
 > *This option is experimental and subject to change without notice.*
 

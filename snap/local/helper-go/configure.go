@@ -31,26 +31,31 @@ func configure() {
 	log.Info("Enabling config options")
 	err := snapctl.Set("app-options", "true").Run()
 	if err != nil {
-		log.Fatalf("could not enable config options: %v", err)
+		log.Fatalf("Could not enable config options: %v", err)
 	}
 
-	log.Info("Enabling config hierarchy")
 	options.EnableConfigHierarchy()
-	log.Info("Setting config hierarchy separator")
 	options.SetHierarchySeparator("__")
-	log.Info("Setting config segment separator")
 	options.SetSegmentSeparator("_")
+
+	security, err := snapctl.Get("edgex-security-secret-store").Run()
+	if err != nil {
+		log.Fatalf("Could not get the value of edgex-security-secret-store: %v", err)
+	}
+	if security != "true" && security != "false" {
+		log.Fatalf("edgex-security-secret-store must be either 'true' or 'false'. When unset, it defaults to 'true'")
+	}
 
 	log.Info("Processing config options")
 	err = options.ProcessConfig(app)
 	if err != nil {
-		log.Fatalf("could not process config options: %v", err)
+		log.Fatalf("Could not process config options: %v", err)
 	}
 
 	log.Info("Processing autostart options")
 	err = options.ProcessAutostart(app)
 	if err != nil {
-		log.Fatalf("could not process autostart options: %v", err)
+		log.Fatalf("Could not process autostart options: %v", err)
 	}
 
 }
