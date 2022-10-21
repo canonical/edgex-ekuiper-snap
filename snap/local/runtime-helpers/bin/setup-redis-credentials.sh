@@ -21,8 +21,10 @@ handle_error()
 	fi
 }
 
-if [ "EDGEX_SECURITY_SECRET_STORE" == "off" ] ; then
-	logger "$LOG_PREFIX: EDGEX_SECURITY_SECRET_STORE set to off, ekuiper will start without edgexfoundry authentication"
+
+
+if [ "$EDGEX_SECURITY_SECRET_STORE" == "false" ] ; then
+	logger "$LOG_PREFIX: EDGEX_SECURITY_SECRET_STORE set to false, ekuiper will start without edgexfoundry authentication"
 
 	logger "$LOG_PREFIX: Removing Redis credentials from $SOURCE_FILE"
 	YQ_RES=$(yq -i 'del(.default.optional.Username, .default.optional.Password)' "$SOURCE_FILE")
@@ -32,7 +34,7 @@ if [ "EDGEX_SECURITY_SECRET_STORE" == "off" ] ; then
 	YQ_RES=$(yq -i 'del(.edgex.redisMsgBus.optional.Username, .edgex.redisMsgBus.optional.Password)' "$CONNECTION_FILE")
 	handle_error $? "yq" $YQ_RES
 else
-	logger "$LOG_PREFIX: $EDGEX_SECURITY_SECRET_STORE set to true by default, ekuiper start to get edgexfoundry authentication"
+	logger "$LOG_PREFIX: EDGEX_SECURITY_SECRET_STORE set to true by default, ekuiper start to get edgexfoundry authentication"
 	# use Vault token query Redis token, access edgexfoundry secure Message Bus
 	if [ -f "$VAULT_TOKEN_FILE" ] ; then
 		# get Vault token and create redis.yaml

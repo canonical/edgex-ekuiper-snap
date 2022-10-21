@@ -38,12 +38,17 @@ func configure() {
 	options.SetHierarchySeparator("__")
 	options.SetSegmentSeparator("_")
 
-	security, err := snapctl.Get("edgex-security-secret-store").Run()
+	security, err := snapctl.Get("config.edgex-security-secret-store").Run()
 	if err != nil {
 		log.Fatalf("Could not get the value of edgex-security-secret-store: %v", err)
 	}
-	if security != "true" && security != "false" {
+	if security != "true" && security != "false" && security != "" {
 		log.Fatalf("edgex-security-secret-store must be either 'true' or 'false'. When unset, it defaults to 'true'")
+	} else if security == "" {
+		err = snapctl.Set("config.edgex-security-secret-store", "true").Run()
+		if err != nil {
+			log.Fatalf("Could not set the default value of edgex-security-secret-store to 'true': %v", err)
+		}
 	}
 
 	log.Info("Processing config options")
