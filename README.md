@@ -133,9 +133,17 @@ snap set edgex-app-service-configurable profile=rules-engine
 snap start edgex-app-service-configurable
 ````
 Then, set eKuiper to subscribe to `app-service-configurable` by changing ekuiper's 
-default topic from 'rules-event' to 'edgex/events/#', default messageType from 'event' to 'request' :
+default topic from 'rules-event' to 'edgex/events/#', default messageType from 'event' to 'request':
 ```bash
-snap set edgex-ekuiper config.edgex-default-topic=rules-events config.edgex-default-messagetype=event
+snap set edgex-ekuiper config.edgex.default.topic=rules-events config.edgex.default.messagetype=event
+# restart is required to load new configurations
+snap restart edgex-ekuiper
+```
+Unsetting the above changes will revert ekuiper to default settings (subscribe to all EdgeX events):
+```bash
+snap unset edgex-ekuiper config.edgex.default.topic config.edgex.default.messagetype
+# restart is required to load new configurations
+snap restart edgex-ekuiper
 ```
 
 
