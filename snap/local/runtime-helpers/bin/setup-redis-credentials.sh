@@ -23,7 +23,15 @@ handle_error()
 }
 
 if [ "$EDGEX_SECURITY" == "off" ] ; then
-	logger "$LOG_PREFIX: EDGEX_SECURITY set to off, ekuiper start without edgexfoundry authentication"
+	logger "$LOG_PREFIX: EDGEX_SECURITY set to off, ekuiper will start without edgexfoundry authentication"
+
+	logger "$LOG_PREFIX: removing Redis credentials from $SOURCE_FILE"
+	YQ_RES=$(yq -i 'del(.default.optional.Username, .default.optional.Password)' "$SOURCE_FILE")
+	handle_error $? "yq" $YQ_RES
+
+	logger "$LOG_PREFIX: removing Redis credentials from $CONNECTION_FILE"
+	YQ_RES=$(yq -i 'del(.edgex.redisMsgBus.optional.Username, .edgex.redisMsgBus.optional.Password)' "$CONNECTION_FILE")
+	handle_error $? "yq" $YQ_RES
 else
 	logger "$LOG_PREFIX: EDGEX_SECURITY set to on by default, ekuiper start to get edgexfoundry authentication"
 	# use Vault token query Redis token, access edgexfoundry secure Message Bus
@@ -68,7 +76,7 @@ else
 		logger "$LOG_PREFIX: adding Redis credentials to $CONNECTION_FILE"
 		YQ_RES=$(yq -i '.edgex.redisMsgBus += {"optional":{"Username":"'$REDIS_USER'"}+{"Password":"'$REDIS_PASS'"}}' "$CONNECTION_FILE")
 		handle_error $? "yq" $YQ_RES
-
+		
 		logger "$LOG_PREFIX: configured eKuiper to authenticate with Redis, using credentials fetched from Vault"
 	else
 		logger --stderr "$LOG_PREFIX: unable to configure eKuiper to authenticate with Redis: unable to query Redis token from Vault: Vault token not available. Exiting..."
