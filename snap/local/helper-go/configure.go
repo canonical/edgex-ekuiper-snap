@@ -34,6 +34,13 @@ func configure() {
 		log.Fatalf("could not enable config options: %v", err)
 	}
 
+	log.Info("Enabling config hierarchy")
+	options.EnableConfigHierarchy()
+	log.Info("Setting config hierarchy separator")
+	options.SetHierarchySeparator("__")
+	log.Info("Setting config segment separator")
+	options.SetSegmentSeparator("_")
+
 	log.Info("Processing config options")
 	err = options.ProcessConfig(app)
 	if err != nil {
