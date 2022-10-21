@@ -38,12 +38,10 @@ func configure() {
 	options.SetHierarchySeparator("__")
 	options.SetSegmentSeparator("_")
 
-	security, err := snapctl.Get("config.edgex-security-secret-store").Run()
-	if err != nil {
-		log.Fatalf("Could not get the value of edgex-security-secret-store: %v", err)
-	}
-	if security != "true" && security != "false" && security != "" {
-		log.Fatalf("edgex-security-secret-store must be either 'true' or 'false'. When unset, it defaults to 'true'")
+	if v, err := snapctl.Get("edgex-security").Run(); err != nil {
+		log.Fatalf("Could not get the value of edgex-security snap option: %v", err)
+	} else if v != "" {
+		log.Fatalf("Deprecated option: 'edgex-security', use 'config.edgex-security-secret-store'")
 	}
 
 	log.Info("Processing config options")
