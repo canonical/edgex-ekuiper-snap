@@ -42,6 +42,6 @@ func install() {
 
 	err := installConfig()
 	if err != nil {
-		log.Fatalf("Error installing config file: %s", err)
+		log.Fatalf("Error installing config files: %s", err)
 	}
 }

@@ -22,6 +22,11 @@ The snap is built automatically and published on the Snap Store as [edgex-ekuipe
 ## Snap Installation
 Please refer to the [edgex-ekuiper] snap store listing for installation and releases.
 
+The eKuipper daemon in the snap is disabled and stopped by default. To start and enabled:
+```bash
+sudo snap start --enable edgex-ekuiper
+```
+
 ### EdgeX Integration
 This snap works together with several other EdgeX services.
 
@@ -63,7 +68,7 @@ please  refer to [Work with App Service Configurable filtering](#work-with-app-s
 #### System overview
 The default setup described above will prepare the system such that:
 - `edgex-ekuiper` is active and enabled
-- `edgexfoundry.kuiper` and `edgexfoundry.app-service-configurable` are inactive and disabled - these are embedded versions of kuiper and App Service Configurable which we do not use here.
+- `edgexfoundry.kuiper` and `edgexfoundry.app-service-configurable` are inactive and disabled - these are deprecated and embedded versions of eKuiper and App Service Configurable which we do not use here.
 - `edgexfoundry`'s `vault` and `redis`, along with other core services are active and enabled
 
 Verify that by executing the following command:

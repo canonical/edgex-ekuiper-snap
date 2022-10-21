@@ -1,12 +1,5 @@
 #!/bin/bash -e
 
-# convert cmdline to string array
-ARGV=($@)
-
-# grab binary path
-BINPATH="${ARGV[0]}"
-
-# binary name == service name/key
 SERVICE="kuiper"
 SERVICE_ENV="$SNAP_DATA/config/$SERVICE/res/$SERVICE.env"
 TAG="edgex-$SERVICE."$(basename "$0")

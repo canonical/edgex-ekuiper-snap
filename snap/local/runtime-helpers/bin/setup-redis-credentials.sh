@@ -24,7 +24,7 @@ handle_error()
 
 
 if [ "$EDGEX_SECURITY_SECRET_STORE" == "false" ] ; then
-	logger "$LOG_PREFIX: EDGEX_SECURITY_SECRET_STORE set to false, ekuiper will start without edgexfoundry authentication"
+	logger "$LOG_PREFIX: EDGEX_SECURITY_SECRET_STORE set to false, will remove Redis credentials"
 
 	logger "$LOG_PREFIX: Removing Redis credentials from $SOURCE_FILE"
 	YQ_RES=$(yq -i 'del(.default.optional.Username, .default.optional.Password)' "$SOURCE_FILE")
@@ -34,7 +34,7 @@ if [ "$EDGEX_SECURITY_SECRET_STORE" == "false" ] ; then
 	YQ_RES=$(yq -i 'del(.edgex.redisMsgBus.optional.Username, .edgex.redisMsgBus.optional.Password)' "$CONNECTION_FILE")
 	handle_error $? "yq" $YQ_RES
 else
-	logger "$LOG_PREFIX: EDGEX_SECURITY_SECRET_STORE set to true by default, ekuiper start to get edgexfoundry authentication"
+	logger "$LOG_PREFIX: EDGEX_SECURITY_SECRET_STORE set to true (default), will set up Redis credentials"
 	# use Vault token query Redis token, access edgexfoundry secure Message Bus
 	if [ -f "$VAULT_TOKEN_FILE" ] ; then
 		# get Vault token and create redis.yaml
@@ -55,7 +55,7 @@ else
 			exit 1
 		fi
 
-		# get CURL's reponse
+		# get cURL's response
 		if [ ${#CURL_RES} -eq 3 ]; then
 			logger --stderr "$LOG_PREFIX: Unexpected http response with empty body"
 			exit 1
@@ -63,7 +63,7 @@ else
 			BODY="${CURL_RES:0:${#CURL_RES}-3}"
 		fi
 
-		# process the reponse and check if yq works
+		# process the response and check if yq works
 		REDIS_USER=$(echo $BODY| yq '.data.username')
 		handle_error $? "yq" $REDIS_USER
 		REDIS_PASS=$(echo $BODY| yq '.data.password')

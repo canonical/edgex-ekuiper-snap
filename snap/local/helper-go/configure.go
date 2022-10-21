@@ -44,11 +44,6 @@ func configure() {
 	}
 	if security != "true" && security != "false" && security != "" {
 		log.Fatalf("edgex-security-secret-store must be either 'true' or 'false'. When unset, it defaults to 'true'")
-	} else if security == "" {
-		err = snapctl.Set("config.edgex-security-secret-store", "true").Run()
-		if err != nil {
-			log.Fatalf("Could not set the default value of edgex-security-secret-store to 'true': %v", err)
-		}
 	}
 
 	log.Info("Processing config options")
