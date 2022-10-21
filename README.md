@@ -22,11 +22,6 @@ The snap is built automatically and published on the Snap Store as [edgex-ekuipe
 ## Snap Installation
 Please refer to the [edgex-ekuiper] snap store listing for installation and releases.
 
-The eKuipper daemon in the snap is disabled and stopped by default. To start and enabled:
-```bash
-sudo snap start --enable edgex-ekuiper
-```
-
 ### EdgeX Integration
 This snap works together with several other EdgeX services.
 
