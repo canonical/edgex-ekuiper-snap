@@ -20,12 +20,12 @@ default:
   protocol: redis
   server: localhost
   connectionSelector: edgex.redisMsgBus
-  topic: rules-events
+  topic: edgex/events/#
   type: redis
   # Could be 'event' or 'request'.
   # If the message is from app service, the message type is an event;
   # Otherwise, if it is from the message bus directly, it should be a request
-  messageType: event
+  messageType: request
 
 #Override the global configurations
 application_conf:
