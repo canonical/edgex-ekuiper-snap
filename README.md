@@ -62,12 +62,13 @@ please  refer to [Work with App Service Configurable filtering](#work-with-app-s
 
 #### System overview
 The default setup described above will prepare the system such that:
-- `edgex-ekuiper` is active and enabled
+- `edgex-ekuiper` is inactive and disabled
 - `edgexfoundry.kuiper` and `edgexfoundry.app-service-configurable` are inactive and disabled - these are deprecated and embedded versions of eKuiper and App Service Configurable which we do not use here.
 - `edgexfoundry`'s `vault` and `redis`, along with other core services are active and enabled
 
 Verify that by executing the following command:
 ```bash
+$ sudo snap start edgex-ekuiper
 $ sudo snap services edgex-ekuiper edgexfoundry
 Service                                                  Startup   Current   Notes
 edgex-ekuiper.kuiper                                     enabled   active    -
@@ -136,13 +137,13 @@ Then, set eKuiper to subscribe to `app-service-configurable` by changing ekuiper
 default topic from 'rules-event' to 'edgex/events/#', default messageType from 'event' to 'request':
 ```bash
 snap set edgex-ekuiper config.edgex.default.topic=rules-events config.edgex.default.messagetype=event
-# restart is required to load new configurations
+# restart is required to load new configuration options
 snap restart edgex-ekuiper
 ```
 Unsetting the above changes will revert ekuiper to default settings (subscribe to all EdgeX events):
 ```bash
 snap unset edgex-ekuiper config.edgex.default.topic config.edgex.default.messagetype
-# restart is required to load new configurations
+# restart is required to load new configuration options
 snap restart edgex-ekuiper
 ```
 
