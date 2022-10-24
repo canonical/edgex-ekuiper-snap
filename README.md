@@ -22,6 +22,8 @@ The snap is built automatically and published on the Snap Store as [edgex-ekuipe
 ## Snap Installation
 Please refer to the [edgex-ekuiper] snap store listing for installation and releases.
 
+The eKuiper service does not start after installation; see [configuration](#snap-configuration).
+
 ### EdgeX Integration
 This snap works together with several other EdgeX services.
 
@@ -68,10 +70,9 @@ The default setup described above will prepare the system such that:
 
 Verify that by executing the following command:
 ```bash
-$ sudo snap start edgex-ekuiper
 $ sudo snap services edgex-ekuiper edgexfoundry
 Service                                                  Startup   Current   Notes
-edgex-ekuiper.kuiper                                     enabled   active    -
+edgex-ekuiper.kuiper                                     disabled  inactive    -
 edgexfoundry.app-service-configurable                    disabled  inactive  -
 edgexfoundry.consul                                      enabled   active    -
 edgexfoundry.core-command                                enabled   active    -
@@ -95,26 +96,23 @@ edgexfoundry.vault                                       enabled   active    -
 To change the default configuration, refer below.
 
 ## Snap Configuration
-The eKuiper service is started by default after installation.
-
-Config files are loaded on startup.
-To restart a running instance and load new configurations:
-```bash
-sudo snap restart edgex-ekuiper.kuiper
-```
-
-The service can be stopped as follows. The `--disable` option
-ensures that as well as stopping the service now, 
-it will not be automatically started on boot:
-```bash
-sudo snap stop --disable edgex-ekuiper.kuiper
-```
+The eKuiper service is stopped and disabled by default after installation. This is to allow configuration (see below) before running the service for the first time.
 
 The service can be started as follows. 
 The `--enable` option ensures that as well as starting the service now, 
 it will be automatically started on boot:
 ```bash
 sudo snap start --enable edgex-ekuiper.kuiper
+```
+
+Conversely, the service can be stopped and disabled as follows:
+```bash
+sudo snap stop --disable edgex-ekuiper.kuiper
+```
+
+To restart a running instance and load new configurations:
+```bash
+sudo snap restart edgex-ekuiper.kuiper
 ```
 
 ### Configuration files
