@@ -80,7 +80,7 @@ parts:
 
   kuiper:
     source: https://github.com/lf-edge/ekuiper.git
-    source-tag: 1.6.0
+    source-tag: 1.6.3
     source-depth: 1
     plugin: make
     build-packages: [gcc, git, libczmq-dev, pkg-config, zip]
