@@ -37,6 +37,11 @@ slots:
       write: 
         - $SNAP_DATA/edgex-ekuiper
 
+plugs:
+  ekuiper-ruleset:
+    interface: content
+    target: $SNAP_DATA/data
+
 apps:
   kuiper:
     command: bin/kuiperd
@@ -80,7 +85,7 @@ parts:
 
   kuiper:
     source: https://github.com/lf-edge/ekuiper.git
-    source-tag: 1.6.3
+    source-tag: 1.7.0
     source-depth: 1
     plugin: make
     build-packages: [gcc, git, libczmq-dev, pkg-config, zip]
