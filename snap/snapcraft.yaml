@@ -37,11 +37,6 @@ slots:
       write: 
         - $SNAP_DATA/edgex-ekuiper
 
-plugs:
-  ekuiper-ruleset:
-    interface: content
-    target: $SNAP_DATA/data
-
 apps:
   kuiper:
     command: bin/kuiperd
@@ -85,13 +80,13 @@ parts:
 
   kuiper:
     source: https://github.com/lf-edge/ekuiper.git
-    source-tag: 1.7.0
+    source-tag: 1.7.3
     source-depth: 1
     plugin: make
     build-packages: [gcc, git, libczmq-dev, pkg-config, zip]
     stage-packages: [libzmq5]
     build-snaps:
-      - go/1.17/stable
+      - go/1.18/stable
     override-build: |
       cd $SNAPCRAFT_PART_SRC
       
