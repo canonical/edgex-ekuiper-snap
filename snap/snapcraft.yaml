@@ -37,6 +37,11 @@ slots:
       write: 
         - $SNAP_DATA/edgex-ekuiper
 
+plugs:
+  ekuiper-data:
+    interface: content
+    target: $SNAP_DATA/data
+
 apps:
   kuiper:
     command: bin/kuiperd
