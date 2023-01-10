@@ -37,6 +37,12 @@ slots:
       write: 
         - $SNAP_DATA/edgex-ekuiper
 
+# Setting Up a provider, the `data` directory needs to be added to its source, e.g.
+# slots:
+#   ekuiper-data:
+#     interface: content
+#     source:
+#       write: [$SNAP_DATA/data]
 plugs:
   ekuiper-data:
     interface: content
