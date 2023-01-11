@@ -163,7 +163,13 @@ where:
 - `write: [$SNAP_DATA/data]` exposes a directory beneath the writable [`$SNAP_DATA`](https://snapcraft.io/docs/environment-variables) to consumer edgex-ekuiper snap. The directory needs to be writable because edgex-ekuiper adds other files inside it during [ruleset provisioning](https://ekuiper.org/docs/en/latest/configuration/global_configurations.html#ruleset-provision). In order to place configuration files beneath `$SNAP_DATA`, the provider needs to contain an [install hook](https://snapcraft.io/docs/supported-snap-hooks#heading--install) or a service which deploys the ruleset after installation. 
 - `data` directory is a required for ruleset provision
 
-Please refer to [edgex-config-provider](https://github.com/canonical/edgex-config-provider), for an example.
+To connect the provider to edgex-ekuiper:
+```
+snap connect edgex-ekuiper:ekuiper-data <config-provider>:ekuiper-data
+```
+Note that the connection needs to happen before starting eKuiper for the first time.
+
+Please refer to [edgex-config-provider](https://github.com/canonical/edgex-config-provider) for mode details.
 
 
 ### Viewing logs
