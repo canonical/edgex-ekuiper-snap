@@ -17,9 +17,9 @@
 package main
 
 import (
-	hooks "github.com/canonical/edgex-snap-hooks/v2"
-	"github.com/canonical/edgex-snap-hooks/v2/env"
-	"github.com/canonical/edgex-snap-hooks/v2/log"
+	hooks "github.com/canonical/edgex-snap-hooks/v3"
+	"github.com/canonical/edgex-snap-hooks/v3/env"
+	"github.com/canonical/edgex-snap-hooks/v3/log"
 )
 
 // installConfig copies all config files from $SNAP to $SNAP_DATA.
@@ -36,12 +36,10 @@ func installConfig() error {
 	return nil
 }
 
-// install is called by the main function
 func install() {
 	log.SetComponentName("install")
 
-	err := installConfig()
-	if err != nil {
+	if err := installConfig(); err != nil {
 		log.Fatalf("Error installing config files: %s", err)
 	}
 }
