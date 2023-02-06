@@ -72,7 +72,7 @@ Verify that by executing the following command:
 ```bash
 $ sudo snap services edgex-ekuiper edgexfoundry
 Service                                                  Startup   Current   Notes
-edgex-ekuiper.kuiper                                     disabled  inactive    -
+edgex-ekuiper.kuiperd                                    disabled  inactive    -
 edgexfoundry.app-service-configurable                    disabled  inactive  -
 edgexfoundry.consul                                      enabled   active    -
 edgexfoundry.core-command                                enabled   active    -
@@ -102,17 +102,17 @@ The service can be started as follows.
 The `--enable` option ensures that as well as starting the service now, 
 it will be automatically started on boot:
 ```bash
-sudo snap start --enable edgex-ekuiper.kuiperd
+sudo snap start --enable edgex-ekuiper
 ```
 
 Conversely, the service can be stopped and disabled as follows:
 ```bash
-sudo snap stop --disable edgex-ekuiper.kuiperd
+sudo snap stop --disable edgex-ekuiper
 ```
 
 To restart a running instance and load new configurations:
 ```bash
-sudo snap restart edgex-ekuiper.kuiperd
+sudo snap restart edgex-ekuiper
 ```
 
 ### Configuration files
