@@ -43,7 +43,7 @@ plugs:
     target: $SNAP_DATA # the provider needs to supply files under $SNAP_DATA/data
 
 apps:
-  kuiper:
+  kuiperd:
     command: bin/kuiperd
     command-chain:
       - bin/source-env-file.sh
@@ -58,6 +58,13 @@ apps:
     restart-delay: 3s
     plugs: [network, network-bind]
 
+  kuiper:
+    command: bin/kuiper
+    environment:
+      KuiperBaseKey: $SNAP_DATA
+    plugs: [home, network, network-bind]
+
+  # deprecated
   kuiper-cli:
     command: bin/kuiper
     environment:

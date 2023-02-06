@@ -102,17 +102,17 @@ The service can be started as follows.
 The `--enable` option ensures that as well as starting the service now, 
 it will be automatically started on boot:
 ```bash
-sudo snap start --enable edgex-ekuiper.kuiper
+sudo snap start --enable edgex-ekuiper.kuiperd
 ```
 
 Conversely, the service can be stopped and disabled as follows:
 ```bash
-sudo snap stop --disable edgex-ekuiper.kuiper
+sudo snap stop --disable edgex-ekuiper.kuiperd
 ```
 
 To restart a running instance and load new configurations:
 ```bash
-sudo snap restart edgex-ekuiper.kuiper
+sudo snap restart edgex-ekuiper.kuiperd
 ```
 
 ### Configuration files
