@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-SERVICE="kuiper"
+SERVICE="kuiperd"
 SERVICE_ENV="$SNAP_DATA/config/$SERVICE/res/$SERVICE.env"
 TAG="edgex-$SERVICE."$(basename "$0")
 
