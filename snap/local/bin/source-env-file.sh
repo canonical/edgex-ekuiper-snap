@@ -2,7 +2,7 @@
 
 SERVICE="kuiperd"
 SERVICE_ENV="$SNAP_DATA/config/$SERVICE/res/$SERVICE.env"
-TAG="edgex-$SERVICE."$(basename "$0")
+TAG="$SNAP_INSTANCE_NAME."$(basename "$0")
 
 if [ -f "$SERVICE_ENV" ]; then
     logger --tag=$TAG "Sourcing $SERVICE_ENV"
