@@ -22,7 +22,7 @@ import (
 )
 
 func configure() {
-	const app = "kuiper"
+	const app = "kuiperd"
 
 	log.SetComponentName("configure")
 
