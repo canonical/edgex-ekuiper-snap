@@ -178,6 +178,31 @@ For example, to print 100 lines and follow the logs:
 snap logs -n=100 -f edgex-ekuiper
 ```
 
+## Build from source
+Execute the following command from the top-level directory of this repo:
+```bash
+snapcraft
+```
+
+This will create a snap package file with .snap extension. It can be installed locally by setting the --dangerous flag:
+
+```bash
+sudo snap install --dangerous <snap-file>
+```
+The [snapcraft overview] provides additional details.
+
+### Obtain a Secret Store token
+The `edgex-secretstore-token` snap slot makes it possible to automatically receive a token from a locally installed platform snap.
+
+If the snap is built and installed locally, the interface will not auto-connect. You can check the status of the connections by running the `snap connections edgex-ekuiper` command.
+
+To manually connect and obtain a token:
+```bash
+sudo snap connect edgexfoundry:edgex-secretstore-token edgex-ekuiper:edgex-secretstore-token
+```
+
+Please refer [here][secret-store-token] for further information.
+
 ## Tagging
 This repository is tagged after the eKuiper project with a [semver build metadata](https://semver.org/#spec-item-10) `snap` suffix.
 For example, if eKuiper is tagged as `1.4.3`, this repository will be tagged as `1.4.3+snap`, `1.4.3+snap.2`, `1.4.3+snap.N`. The build version increments indicate updates to the snap packaging on top of the same eKuiper release.
@@ -188,3 +213,5 @@ The [release](https://github.com/canonical/edgex-ekuiper-snap/actions/workflows/
 [edgex-ekuiper]: https://snapcraft.io/edgex-ekuiper
 [edgexfoundry]: https://snapcraft.io/edgexfoundry
 [app-service-configurable]: https://snapcraft.io/edgex-app-service-configurable
+[secret-store-token]: https://docs.edgexfoundry.org/2.3/getting-started/Ch-GettingStartedSnapUsers/#secret-store-token
+[snapcraft overview]: https://snapcraft.io/docs/snapcraft-overview 
