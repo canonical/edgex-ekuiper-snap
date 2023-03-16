@@ -2,22 +2,7 @@ name: edgex-ekuiper
 version: git
 license: Apache-2.0
 summary: EdgeX eKuiper
-description: |
-  eKuiper is a lightweight IoT edge analytics software.
-
-  This is a snap packaging of eKuiper tailored to the EdgeX Foundry snap,
-  available at: https://snapcraft.io/edgexfoundry
-
-  The snap is designed to work with EdgeX and is not supported 
-  for standalone use.
-
-  The snap is **NOT SUPPORTED** by the eKuiper community.
-  For any EdgeX-related issues, please refer to:
-  https://github.com/canonical/edgex-ekuiper-snap
-
-  eKuiper source code: https://github.com/lf-edge/ekuiper
-
-  eKuiper is a trademark of LF Projects: https://lfprojects.org
+description: Refer to https://snapcraft.io/edgex-ekuiper
 
 base: core20
 
