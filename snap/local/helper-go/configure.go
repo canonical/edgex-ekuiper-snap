@@ -22,8 +22,6 @@ import (
 )
 
 func configure() {
-	const app = "kuiperd"
-
 	log.SetComponentName("configure")
 
 	options.EnableConfigHierarchy()
