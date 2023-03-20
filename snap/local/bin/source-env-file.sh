@@ -1,7 +1,7 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 
 SERVICE="kuiperd"
-ENV_FILE="$SNAP_DATA/config/$SERVICE/res/overrides.env"
+ENV_FILE="$SNAP_DATA/config/$SERVICE/overrides.env"
 TAG="$SNAP_INSTANCE_NAME."$(basename "$0")
 
 if [ -f "$ENV_FILE" ]; then
