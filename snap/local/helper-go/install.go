@@ -41,7 +41,7 @@ func install() {
 	log.SetComponentName("install")
 
 	// Install default config files only if no config provider is connected
-	isConnected, err := snapctl.IsConnected(app + "-config").Run()
+	isConnected, err := snapctl.IsConnected("ekuiper-data").Run()
 	if err != nil {
 		log.Fatalf("Error checking interface connection: %s", err)
 	}
