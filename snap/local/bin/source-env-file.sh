@@ -1,13 +1,13 @@
 #!/bin/bash -e
 
 SERVICE="kuiperd"
-SERVICE_ENV="$SNAP_DATA/config/$SERVICE/res/$SERVICE.env"
+ENV_FILE="$SNAP_DATA/config/$SERVICE/overrides.env"
 TAG="$SNAP_INSTANCE_NAME."$(basename "$0")
 
-if [ -f "$SERVICE_ENV" ]; then
-    logger --tag=$TAG "Sourcing $SERVICE_ENV"
+if [ -f "$ENV_FILE" ]; then
+    logger --tag=$TAG "Sourcing $ENV_FILE"
     set -o allexport
-    source "$SERVICE_ENV" set
+    source "$ENV_FILE" set
     set +o allexport
 fi
 

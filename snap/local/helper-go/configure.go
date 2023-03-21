@@ -21,20 +21,20 @@ import (
 	"github.com/canonical/edgex-snap-hooks/v3/options"
 )
 
-func configure() {
-	const app = "kuiperd"
+const daemonApp = "kuiperd"
 
+func configure() {
 	log.SetComponentName("configure")
 
 	options.EnableConfigHierarchy()
 	options.SetHierarchySeparator("__")
 	options.SetSegmentSeparator("_")
 
-	if err := options.ProcessConfig(app); err != nil {
+	if err := options.ProcessConfig(daemonApp); err != nil {
 		log.Fatalf("Error processing config options: %v", err)
 	}
 
-	if err := options.ProcessAutostart(app); err != nil {
+	if err := options.ProcessAutostart(daemonApp); err != nil {
 		log.Fatalf("Error processing autostart options: %v", err)
 	}
 }
