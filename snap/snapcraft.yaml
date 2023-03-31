@@ -49,13 +49,6 @@ apps:
       KuiperBaseKey: $SNAP_DATA
     plugs: [home, network, network-bind]
 
-  # deprecated
-  kuiper-cli:
-    command: bin/kuiper
-    environment:
-      KuiperBaseKey: $SNAP_DATA
-    plugs: [home, network, network-bind]
-
 parts:
   helper-go:
     source: snap/local/helper-go
@@ -94,6 +87,7 @@ parts:
 
       install "$SNAPCRAFT_PROJECT_DIR/etc/kuiper.yaml" "$SNAPCRAFT_PART_INSTALL/etc"
       install "$SNAPCRAFT_PROJECT_DIR/etc/edgex.yaml" "$SNAPCRAFT_PART_INSTALL/etc/sources"
+      install "$SNAPCRAFT_PROJECT_DIR/etc/memory.yaml" "$SNAPCRAFT_PART_INSTALL/etc/sources"
       install "$SNAPCRAFT_PROJECT_DIR/etc/connection.yaml" "$SNAPCRAFT_PART_INSTALL/etc/connections"
 
       install -DT "$SNAPCRAFT_PART_SRC/LICENSE" "$SNAPCRAFT_PART_INSTALL/usr/share/doc/kuiper/LICENSE"
