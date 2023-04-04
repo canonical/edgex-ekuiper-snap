@@ -123,19 +123,20 @@ The `/var/snap/edgex-ekuiper/current/etc` directory contains the configuration f
 These include the basic server configuration, as well as configurations such as for sources, sinks, and connections.
 
 ### Configuration overrides
-The Snap now provides an interface  to modify environment variables for supported applications.
+The Snap provides an interface to set environment variables for the eKuiper Daemon.
 
 > **Example**  
-> To modify environment variables, set the following option:
-> ```
+> ```bash
 > # enable eKuiper's debug mode
 > snap set edgex-ekuiper config.kuiper.basic.debug=true
-> # change EdgeE's default port
+>
+> # change EdgeX's default port
 > snap set edgex-ekuiper config.edgex.default.port=1111
+>
 > snap restart edgex-ekuiper
 > ```
 
-For more details on Snap options, please refer to EdgeX  [config overrides] documentation. 
+For more details on Snap options, please refer to EdgeX [config overrides] documentation. 
 To learn more about the supported environment variables, please consult the eKuiper [configuration] documentation.
 
 ### Work with App Service Configurable filtering:
