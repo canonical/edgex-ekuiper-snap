@@ -4,7 +4,7 @@ license: Apache-2.0
 summary: EdgeX eKuiper
 description: Refer to https://snapcraft.io/edgex-ekuiper
 
-base: core20
+base: core22
 
 architectures:
   - build-on: amd64
@@ -54,11 +54,11 @@ parts:
     source: snap/local/helper-go
     plugin: make
     build-snaps:
-      - go/1.18/stable
+      - go/1.20/stable
     override-build: |
-      cd $SNAPCRAFT_PART_SRC
+      cd $CRAFT_PART_SRC
       make build
-      install -DT ./helper-go $SNAPCRAFT_PART_INSTALL/bin/helper-go
+      install -DT ./helper-go $CRAFT_PART_INSTALL/bin/helper-go
 
   runtime-helpers:
     plugin: dump
@@ -76,21 +76,21 @@ parts:
     build-packages: [gcc, git, libczmq-dev, pkg-config, zip]
     stage-packages: [libzmq5]
     build-snaps:
-      - go/1.18/stable
+      - go/1.20/stable
     override-build: |
-      cd $SNAPCRAFT_PART_SRC
+      cd $CRAFT_PART_SRC
       
-      export BUILD_PATH=$SNAPCRAFT_PART_BUILD
+      export BUILD_PATH=$CRAFT_PART_BUILD
       make build_with_edgex
   
-      find $SNAPCRAFT_PART_BUILD/kuiper-* -maxdepth 1 -mindepth 1 -exec cp -r '{}' $SNAPCRAFT_PART_INSTALL/ \;
+      find $CRAFT_PART_BUILD/kuiper-* -maxdepth 1 -mindepth 1 -exec cp -r '{}' $CRAFT_PART_INSTALL/ \;
 
-      install "$SNAPCRAFT_PROJECT_DIR/etc/kuiper.yaml" "$SNAPCRAFT_PART_INSTALL/etc"
-      install "$SNAPCRAFT_PROJECT_DIR/etc/edgex.yaml" "$SNAPCRAFT_PART_INSTALL/etc/sources"
-      install "$SNAPCRAFT_PROJECT_DIR/etc/memory.yaml" "$SNAPCRAFT_PART_INSTALL/etc/sources"
-      install "$SNAPCRAFT_PROJECT_DIR/etc/connection.yaml" "$SNAPCRAFT_PART_INSTALL/etc/connections"
+      install "$CRAFT_PROJECT_DIR/etc/kuiper.yaml" "$CRAFT_PART_INSTALL/etc"
+      install "$CRAFT_PROJECT_DIR/etc/edgex.yaml" "$CRAFT_PART_INSTALL/etc/sources"
+      install "$CRAFT_PROJECT_DIR/etc/memory.yaml" "$CRAFT_PART_INSTALL/etc/sources"
+      install "$CRAFT_PROJECT_DIR/etc/connection.yaml" "$CRAFT_PART_INSTALL/etc/connections"
 
-      install -DT "$SNAPCRAFT_PART_SRC/LICENSE" "$SNAPCRAFT_PART_INSTALL/usr/share/doc/kuiper/LICENSE"
+      install -DT "$CRAFT_PART_SRC/LICENSE" "$CRAFT_PART_INSTALL/usr/share/doc/kuiper/LICENSE"
     stage:
       - -etc/ldap/
       - -etc/mgmt/
