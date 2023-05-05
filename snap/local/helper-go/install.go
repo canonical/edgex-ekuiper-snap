@@ -29,10 +29,12 @@ import (
 func installConfig() error {
 	path := "/"
 
-	out, err := exec.Command("cp", "--recursive", env.Snap+path, env.SnapData+path).CombinedOutput()
+	out, err := exec.Command("cp", "--recursive -v", env.Snap+path, env.SnapData+path).CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("%s: %s", out, err)
 	}
+
+	log.Infof("Out: %s", out)
 
 	return nil
 }
