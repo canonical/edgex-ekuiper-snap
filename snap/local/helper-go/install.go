@@ -17,7 +17,9 @@
 package main
 
 import (
-	hooks "github.com/canonical/edgex-snap-hooks/v3"
+	"fmt"
+	"os/exec"
+
 	"github.com/canonical/edgex-snap-hooks/v3/env"
 	"github.com/canonical/edgex-snap-hooks/v3/log"
 	"github.com/canonical/edgex-snap-hooks/v3/snapctl"
@@ -27,11 +29,9 @@ import (
 func installConfig() error {
 	path := "/"
 
-	err := hooks.CopyDir(
-		env.Snap+path,
-		env.SnapData+path)
+	out, err := exec.Command("cp", "--recursive", env.Snap+path, env.SnapData+path).CombinedOutput()
 	if err != nil {
-		return err
+		return fmt.Errorf("%s: %s", out, err)
 	}
 
 	return nil
