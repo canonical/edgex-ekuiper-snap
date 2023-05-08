@@ -33,7 +33,6 @@ func installConfig() error {
 	if err != nil {
 		return fmt.Errorf("%s: %s", out, err)
 	}
-	log.Infof("Copied %s", out)
 
 	return nil
 }
