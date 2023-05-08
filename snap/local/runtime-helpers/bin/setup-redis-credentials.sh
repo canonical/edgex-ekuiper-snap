@@ -71,7 +71,6 @@ else
 
 		# pass generated Redis credentials to configuration files
 		logger "$LOG_PREFIX: Adding Redis credentials to $SOURCE_FILE"
-		ls -l $SNAP_DATA/etc/sources/
 		YQ_RES=$(yq -i '.default += {"optional":{"Username":"'$REDIS_USER'"}+{"Password":"'$REDIS_PASS'"}}' "$SOURCE_FILE")
 		handle_error $? "yq" $YQ_RES
 		
