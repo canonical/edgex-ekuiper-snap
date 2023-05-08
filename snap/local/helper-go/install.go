@@ -29,7 +29,7 @@ import (
 func installConfig() error {
 
 	out, err := exec.Command(
-		"cp", "--recursive", "--no-target-directory", "--verbose", env.Snap, env.SnapData).CombinedOutput()
+		"cp", "--recursive", "--no-target-directory", env.Snap, env.SnapData).CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("%s: %s", out, err)
 	}
